@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>孙笑川吧 - 抽象智能体</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --tieba-blue: #4e6ef2;
+    --tieba-blue-dark: #3a56d4;
+    --bg: #f5f6fa;
+    --card: #ffffff;
+    --text: #1f2329;
+    --text-sub: #9195a3;
+    --border: #e8e9ed;
+    --floor-hover: #fafbfc;
+  }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.7;
+    padding-bottom: 120px;
+  }
+  /* 顶部导航 */
+  .topbar {
+    height: 56px;
+    background: var(--tieba-blue);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 2px 8px rgba(78,110,242,.25);
+  }
+  .logo { font-size: 20px; font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+  .logo .paw { font-size: 22px; }
+  .search {
+    margin-left: 40px; flex: 1; max-width: 420px;
+    background: rgba(255,255,255,.2); border-radius: 6px;
+    height: 34px; display: flex; align-items: center; padding: 0 12px;
+    color: rgba(255,255,255,.85); font-size: 13px;
+  }
+  .top-actions { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+  .provider-badge {
+    background: rgba(255,255,255,.18); padding: 5px 12px; border-radius: 20px;
+    font-size: 12px; cursor: pointer; white-space: nowrap;
+  }
+  .provider-badge:hover { background: rgba(255,255,255,.3); }
+  .avatar-me {
+    width: 32px; height: 32px; border-radius: 50%; background: #ffb400;
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+  }
+  /* 吧横幅 */
+  .banner {
+    background: linear-gradient(135deg, #4e6ef2, #764ba2);
+    color: #fff; padding: 26px 24px 22px;
+  }
+  .banner-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; gap: 20px; }
+  .forum-icon {
+    width: 64px; height: 64px; border-radius: 12px; background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 34px; flex-shrink: 0;
+  }
+  .forum-info h1 { font-size: 24px; margin-bottom: 4px; }
+  .forum-info p { font-size: 13px; opacity: .9; }
+  .follow-btn {
+    margin-left: auto; background: #fff; color: var(--tieba-blue);
+    border: none; padding: 9px 22px; border-radius: 6px; font-size: 14px;
+    font-weight: 600; cursor: pointer;
+  }
+  .follow-btn.followed { background: rgba(255,255,255,.2); color: #fff; }
+  /* 主体 */
+  .wrap { max-width: 960px; margin: 18px auto; display: flex; gap: 16px; padding: 0 16px; }
+  .main { flex: 1; min-width: 0; }
+  .side { width: 240px; flex-shrink: 0; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
+  /* 帖子标题区 */
+  .thread-head { padding: 18px 20px; border-bottom: 1px solid var(--border); }
+  .thread-head h2 { font-size: 18px; margin-bottom: 8px; }
+  .thread-meta { font-size: 12px; color: var(--text-sub); display: flex; gap: 16px; flex-wrap: wrap; }
+  .tag { background: #eef1ff; color: var(--tieba-blue); padding: 1px 8px; border-radius: 4px; font-size: 12px; }
+  /* 楼层 */
+  .floors { padding: 6px 0; }
+  .floor {
+    display: flex; gap: 14px; padding: 18px 20px;
+    border-bottom: 1px solid var(--border); transition: background .15s;
+  }
+  .floor:last-child { border-bottom: none; }
+  .floor:hover { background: var(--floor-hover); }
+  .floor-avatar {
+    width: 40px; height: 40px; border-radius: 6px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; color: #fff;
+  }
+  .ava-ai { background: linear-gradient(135deg, #4e6ef2, #764ba2); }
+  .ava-user { background: linear-gradient(135deg, #ffb400, #ff7a45); }
+  .floor-body { flex: 1; min-width: 0; }
+  .floor-top { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+  .floor-name { font-weight: 600; color: var(--tieba-blue); }
+  .floor-name.ai { color: #764ba2; }
+  .floor-num { color: var(--text-sub); font-size: 12px; }
+  .floor-time { color: var(--text-sub); font-size: 12px; margin-left: auto; }
+  .floor-content { white-space: pre-wrap; word-break: break-word; font-size: 14px; }
+  .floor-content a { color: var(--tieba-blue); }
+  /* 用户自己的楼层高亮 */
+  .floor.mine .floor-body { position: relative; }
+  .floor-actions { display: flex; gap: 18px; margin-top: 10px; font-size: 12px; color: var(--text-sub); }
+  .floor-actions span { cursor: pointer; user-select: none; }
+  .floor-actions span:hover { color: var(--tieba-blue); }
+  .floor-actions .liked { color: #ff5a5a; }
+  /* 打字机光标 */
+  .cursor::after {
+    content: '▍'; color: var(--tieba-blue); animation: blink .8s infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  /* 输入框 */
+  .composer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(255,255,255,.97); border-top: 1px solid var(--border);
+    padding: 14px 16px; z-index: 40; backdrop-filter: blur(8px);
+  }
+  .composer-inner { max-width: 960px; margin: 0 auto; display: flex; gap: 12px; align-items: flex-end; }
+  .composer textarea {
+    flex: 1; resize: none; border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; font-size: 14px; font-family: inherit; height: 52px;
+    line-height: 1.5; outline: none; transition: border .15s;
+  }
+  .composer textarea:focus { border-color: var(--tieba-blue); }
+  .send-btn {
+    background: var(--tieba-blue); color: #fff; border: none; border-radius: 8px;
+    padding: 0 26px; height: 52px; font-size: 15px; font-weight: 600; cursor: pointer;
+  }
+  .send-btn:hover { background: var(--tieba-blue-dark); }
+  .send-btn:disabled { background: #b8c0e0; cursor: not-allowed; }
+  .hint { max-width: 960px; margin: 6px auto 0; font-size: 12px; color: var(--text-sub); }
+  /* 侧栏 */
+  .side-card { padding: 16px; margin-bottom: 16px; }
+  .side-card h3 { font-size: 14px; margin-bottom: 12px; padding-left: 8px; border-left: 3px solid var(--tieba-blue); }
+  .rule-list { font-size: 13px; color: #555; line-height: 2; padding-left: 4px; }
+  .quick-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .quick-item {
+    background: #f0f2ff; color: var(--tieba-blue); border: 1px solid #dfe4ff;
+    padding: 4px 10px; border-radius: 14px; font-size: 12px; cursor: pointer;
+  }
+  .quick-item:hover { background: var(--tieba-blue); color: #fff; }
+  .clear-btn {
+    width: 100%; margin-top: 8px; background: #fff; color: #ff5a5a;
+    border: 1px solid #ffd0d0; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 13px;
+  }
+  .clear-btn:hover { background: #fff5f5; }
+  /* 弹窗 */
+  .mask {
+    position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 100;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  .mask.hidden { display: none; }
+  .modal {
+    background: #fff; border-radius: 12px; width: 100%; max-width: 460px;
+    padding: 28px; box-shadow: 0 20px 60px rgba(0,0,0,.2); max-height: 90vh; overflow-y: auto;
+  }
+  .modal h2 { font-size: 20px; margin-bottom: 6px; }
+  .modal .sub { color: var(--text-sub); font-size: 13px; margin-bottom: 20px; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; }
+  .form-group select, .form-group input {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+    border-radius: 6px; font-size: 14px; font-family: inherit; outline: none;
+  }
+  .form-group select:focus, .form-group input:focus { border-color: var(--tieba-blue); }
+  .form-group .desc { font-size: 12px; color: var(--text-sub); margin-top: 5px; line-height: 1.6; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 22px; }
+  .btn-primary {
+    flex: 1; background: var(--tieba-blue); color: #fff; border: none;
+    padding: 11px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer;
+  }
+  .btn-ghost {
+    background: #fff; color: #666; border: 1px solid var(--border);
+    padding: 11px 18px; border-radius: 6px; cursor: pointer; font-size: 14px;
+  }
+  .notice {
+    background: #fff8e6; border: 1px solid #ffe0a3; color: #8a6d00;
+    padding: 10px 12px; border-radius: 6px; font-size: 12px; line-height: 1.7; margin-bottom: 18px;
+  }
+  a { color: var(--tieba-blue); }
+  /* 空状态 */
+  .empty { text-align: center; padding: 60px 20px; color: var(--text-sub); }
+  .empty .big { font-size: 48px; margin-bottom: 12px; }
+  @media (max-width: 760px) { .side { display: none; } .search { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo"><span class="paw">🐾</span>百度贴吧</div>
+  <div class="search">🔍 搜贴吧、帖子、吧友</div>
+  <div class="top-actions">
+    <div class="provider-badge" id="providerBadge" onclick="openSetting()">⚙ 未配置</div>
+    <div class="avatar-me" title="吧友">吧</div>
+  </div>
+</div>
+
+<div class="banner">
+  <div class="banner-inner">
+    <div class="forum-icon">🐕</div>
+    <div class="forum-info">
+      <h1>孙笑川吧</h1>
+      <p>抽象文化聚集地 · 关注 1,284,632 吧友 · 贴吧智能体测试中</p>
+    </div>
+    <button class="follow-btn" id="followBtn" onclick="toggleFollow(this)">+ 关注</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="main">
+    <div class="card">
+      <div class="thread-head">
+        <h2>🔥【实时对线】和抽象bot对线，你说一句它怼一句</h2>
+        <div class="thread-meta">
+          <span class="tag">置顶</span>
+          <span class="tag">抽象</span>
+          <span>楼主：吧务删我帖</span>
+          <span id="replyCount">回复 0</span>
+          <span id="floorCount">共 1 楼</span>
+        </div>
+      </div>
+      <div class="floors" id="floors">
+        <div class="empty" id="emptyState">
+          <div class="big">💬</div>
+          <div>楼下空空如也，来发第一句吧</div>
+          <div style="font-size:12px;margin-top:6px">（第一次使用请先点右上角配置 API Key）</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="card side-card">
+      <h3>吧规（划掉）使用说明</h3>
+      <div class="rule-list">
+        1. 本吧智能体由 AI 驱动<br>
+        2. Key 只存你自己浏览器<br>
+        3. 文件别外发，额度别共享<br>
+        4. 抽象归抽象，别上头
+      </div>
+    </div>
+    <div class="card side-card">
+      <h3>快捷对线</h3>
+      <div class="quick-list" id="quickList"></div>
+      <button class="clear-btn" onclick="clearChat()">🗑 清空所有楼层</button>
+    </div>
+    <div class="card side-card">
+      <h3>关于</h3>
+      <div class="rule-list" style="font-size:12px">
+        非官方 · 非商用 · 个人娱乐作品<br>
+        人设为网络抽象文化戏仿<br>
+        对话内容由大模型生成
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="composer">
+  <div class="composer-inner">
+    <textarea id="input" placeholder="理性对线，拒绝人身攻击……（Enter 发送 / Shift+Enter 换行）" onkeydown="onKey(event)"></textarea>
+    <button class="send-btn" id="sendBtn" onclick="send()">发送</button>
+  </div>
+  <div class="hint">🔒 API Key 仅保存在你的浏览器本地（localStorage），不会上传到任何第三方服务器</div>
+</div>
+
+<!-- 设置弹窗 -->
+<div class="mask" id="mask">
+  <div class="modal">
+    <h2>⚙ 配置 AI 接口</h2>
+    <div class="sub">第一次使用需要填一个免费大模型的 API Key，只存在你自己的浏览器里。</div>
+
+    <div class="notice">
+      <b>安全说明：</b>Key 不会写死在文件里，也不会发到别处，只存本机 localStorage。<br>
+      <b>请勿</b>把填过 Key 的浏览器配置导出给他人，也别用公共电脑。免费 Key 丢失最多影响你的免费额度，不涉及财产安全。
+    </div>
+
+    <div class="form-group">
+      <label>① 选择服务商（都需注册领免费 Key）</label>
+      <select id="provider" onchange="onProviderChange()">
+        <option value="siliconflow">硅基流动 SiliconFlow（推荐·有免费模型）</option>
+        <option value="deepseek">DeepSeek 深度求索（新用户有免费额度）</option>
+      </select>
+      <div class="desc" id="providerDesc"></div>
+    </div>
+
+    <div class="form-group">
+      <label>② 粘贴 API Key</label>
+      <input type="password" id="apiKey" placeholder="sk-..." autocomplete="off">
+      <div class="desc" id="keyLink"></div>
+    </div>
+
+    <div class="form-group" id="modelGroup" style="display:none">
+      <label>③ 模型（可选）</label>
+      <input type="text" id="modelInput" placeholder="留空用默认免费模型">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="saveSetting()">保存并开始对线</button>
+      <button class="btn-ghost" onclick="closeSetting()">取消</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========== 配置：免费端点（实测支持浏览器 CORS） ========== */
+var PROVIDERS = {
+  siliconflow: {
+    name: '硅基流动',
+    url: 'https://api.siliconflow.cn/v1/chat/completions',
+    defaultModel: 'Qwen/Qwen2.5-7B-Instruct',
+    keyUrl: 'https://cloud.siliconflow.cn/account/ak',
+    desc: '注册即在「模型广场」筛选免费模型。默认 Qwen2.5-7B-Instruct 免费，零成本。'
+  },
+  deepseek: {
+    name: 'DeepSeek',
+    url: 'https://api.deepseek.com/chat/completions',
+    defaultModel: 'deepseek-chat',
+    keyUrl: 'https://platform.deepseek.com/api_keys',
+    desc: '新用户注册赠送少量免费额度。模型 deepseek-chat，对线更有活儿。额度用完需充值。'
+  }
+};
+
+/* 孙笑川人设（抽象文化戏仿，规避违规内容） */
+var SYSTEM_PROMPT = [
+  '你现在扮演网络抽象文化人物「孙笑川」（孙哥、退役抽象选手），在百度贴吧和吧友对线。',
+  '说话风格：抽象、阴阳怪气、爱复读、嘴硬、爱装。常用梗：「绷不住了」「典中典」「我直接一个」「勿cue」「这波我在大气层」「抓得很」「带善人」「你礼貌吗」「狗粉丝」「孝」「乐」「经典」「出生」「太抽象了」「我裂开了」。',
+  '要求：回复简短口语化，像贴吧楼层回帖，一般 1-3 句话，别写长篇大论，别讲大道理。可以阴阳怪气地调侃对方，保持抽象对线的味道。',
+  '安全底线（必须遵守）：绝对不涉及政治、色情、暴力、辱骂真实人物、地域歧视、违法内容；遇到这类话题用「啊这」「不好说」「别搞」之类抽象玩笑带过，不要展开。',
+  '现在以贴吧回帖口吻回复楼下吧友。'
+].join('');
+
+var QUICK_PHRASES = ['典中典', '绷不住了', '你礼貌吗', '狗粉丝又来了', '这波我在第几层', '孙哥教教我', '我直接一个', '太抽象了'];
+
+/* ========== 状态 ========== */
+var LS_KEY = 'xcs_tieba_config_v1';
+var config = loadConfig();
+var history = [];       // 对话上下文 [{role, content}]
+var floorNo = 1;        // 楼层号（1楼为楼主主题）
+
+/* ========== 初始化 ========== */
+function loadConfig() {
+  try {
+    var raw = localStorage.getItem(LS_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return null;
+}
+function init() {
+  renderQuick();
+  if (config && config.apiKey && PROVIDERS[config.provider]) {
+    updateBadge();
+    document.getElementById('modelInput').value = config.model || '';
+  } else {
+    openSetting();
+  }
+  updateCounts();
+}
+function renderQuick() {
+  var box = document.getElementById('quickList');
+  QUICK_PHRASES.forEach(function (p) {
+    var el = document.createElement('div');
+    el.className = 'quick-item';
+    el.textContent = p;
+    el.onclick = function () { document.getElementById('input').value = p; document.getElementById('input').focus(); };
+    box.appendChild(el);
+  });
+}
+function updateBadge() {
+  var p = PROVIDERS[config.provider];
+  document.getElementById('providerBadge').textContent = '⚙ ' + p.name;
+}
+function updateCounts() {
+  var aiReplies = history.filter(function (m) { return m.role === 'assistant'; }).length;
+  var userMsgs = history.filter(function (m) { return m.role === 'user'; }).length;
+  document.getElementById('replyCount').textContent = '回复 ' + (aiReplies + userMsgs);
+  document.getElementById('floorCount').textContent = '共 ' + floorNo + ' 楼';
+}
+
+/* ========== 设置弹窗 ========== */
+function onProviderChange() {
+  var val = document.getElementById('provider').value;
+  var p = PROVIDERS[val];
+  document.getElementById('providerDesc').textContent = p.desc;
+  document.getElementById('keyLink').innerHTML = '去官网注册领免费 Key：<a href="' + p.keyUrl + '" target="_blank" rel="noopener">' + p.keyUrl + '</a>';
+}
+function openSetting() {
+  document.getElementById('mask').classList.remove('hidden');
+  var sel = document.getElementById('provider');
+  var cur = config && config.provider ? config.provider : 'siliconflow';
+  sel.value = cur;
+  document.getElementById('apiKey').value = config && config.apiKey ? config.apiKey : '';
+  document.getElementById('modelInput').value = config && config.model ? config.model : '';
+  onProviderChange();
+}
+function closeSetting() {
+  document.getElementById('mask').classList.add('hidden');
+  if (!config || !config.apiKey) {
+    // 未配置时不允许直接关闭导致无法使用，退回提示
+  }
+}
+function saveSetting() {
+  var provider = document.getElementById('provider').value;
+  var key = document.getElementById('apiKey').value.trim();
+  if (!key) { alert('请先粘贴 API Key（免费注册即可获得）'); return; }
+  config = { provider: provider, apiKey: key, model: document.getElementById('modelInput').value.trim() };
+  try { localStorage.setItem(LS_KEY, JSON.stringify(config)); } catch (e) {}
+  updateBadge();
+  document.getElementById('mask').classList.add('hidden');
+  alert('保存成功！开始对线吧 🐕');
+}
+
+/* ========== 楼层渲染 ========== */
+function nowTime() {
+  var d = new Date();
+  function p(n) { return n < 10 ? '0' + n : n; }
+  return p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function addFloor(opts) {
+  var empty = document.getElementById('emptyState');
+  if (empty) empty.remove();
+  var floors = document.getElementById('floors');
+  var floor = document.createElement('div');
+  floor.className = 'floor' + (opts.mine ? ' mine' : '');
+  var avaClass = opts.ai ? 'ava-ai' : 'ava-user';
+  var avaText = opts.ai ? '孙' : '吧';
+  floor.innerHTML =
+    '<div class="floor-avatar ' + avaClass + '">' + avaText + '</div>' +
+    '<div class="floor-body">' +
+      '<div class="floor-top">' +
+        '<span class="floor-name ' + (opts.ai ? 'ai' : '') + '">' + (opts.ai ? '孙笑川（bot）' : '吧友（我）') + '</span>' +
+        '<span class="floor-num">' + opts.no + '楼</span>' +
+        '<span class="floor-time">' + opts.time + '</span>' +
+      '</div>' +
+      '<div class="floor-content" id="fc-' + opts.no + '">' + (opts.text || '') + '</div>' +
+      '<div class="floor-actions"><span onclick="like(this)">👍 赞 <b>0</b></span><span>回复</span><span>举报</span></div>' +
+    '</div>';
+  floors.appendChild(floor);
+  scrollBottom();
+  return floor;
+}
+function like(el) {
+  var b = el.querySelector('b');
+  var n = parseInt(b.textContent, 10);
+  if (el.classList.toggle('liked')) { n++; } else { n--; }
+  b.textContent = n;
+}
+function scrollBottom() { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }
+
+/* ========== 发送 & 调用 AI ========== */
+function onKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+}
+function send() {
+  var input = document.getElementById('input');
+  var text = input.value.trim();
+  if (!text) return;
+  if (!config || !config.apiKey) { openSetting(); alert('请先配置 API Key'); return; }
+
+  input.value = '';
+  // 用户楼层
+  addFloor({ no: floorNo++, ai: false, mine: true, text: escapeHtml(text), time: nowTime() });
+  history.push({ role: 'user', content: text });
+  updateCounts();
+
+  // 打字中的 AI 楼层
+  var aiFloor = addFloor({ no: floorNo, ai: true, text: '', time: nowTime() });
+  var contentEl = aiFloor.querySelector('.floor-content');
+  contentEl.classList.add('cursor');
+  contentEl.textContent = '孙哥正在输入…';
+  setSending(true);
+  scrollBottom();
+
+  callAI(contentEl);
+}
+function setSending(on) {
+  document.getElementById('sendBtn').disabled = on;
+  document.getElementById('sendBtn').textContent = on ? '对线中…' : '发送';
+}
+
+function callAI(contentEl) {
+  var p = PROVIDERS[config.provider];
+  var model = config.model || p.defaultModel;
+  var messages = [{ role: 'system', content: SYSTEM_PROMPT }].concat(history.slice(-12));
+
+  fetch(p.url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + config.apiKey },
+    body: JSON.stringify({ model: model, messages: messages, stream: true, temperature: 0.9, max_tokens: 400 })
+  }).then(function (resp) {
+    if (!resp.ok) {
+      return resp.text().then(function (t) { throw new Error('HTTP ' + resp.status + ' ' + t.slice(0, 200)); });
+    }
+    if (!resp.body) throw new Error('浏览器不支持流式读取');
+    return readStream(resp.body, contentEl);
+  }).then(function (fullText) {
+    contentEl.classList.remove('cursor');
+    if (!fullText) fullText = '（...）';
+    contentEl.textContent = fullText;
+    history.push({ role: 'assistant', content: fullText });
+    floorNo++;
+    updateCounts();
+    setSending(false);
+    scrollBottom();
+  }).catch(function (err) {
+    contentEl.classList.remove('cursor');
+    contentEl.textContent = '⚠ 对线失败：' + friendlyError(err) + '（点右上角 ⚙ 检查 Key / 服务商）';
+    setSending(false);
+  });
+}
+
+/* 解析 SSE 流式响应 */
+function readStream(body, contentEl) {
+  var reader = body.getReader();
+  var decoder = new TextDecoder('utf-8');
+  var buffer = '';
+  var full = '';
+  contentEl.textContent = '';
+  function pump() {
+    return reader.read().then(function (res) {
+      if (res.done) return full;
+      buffer += decoder.decode(res.value, { stream: true });
+      var lines = buffer.split('\n');
+      buffer = lines.pop();
+      lines.forEach(function (line) {
+        line = line.trim();
+        if (!line || line.indexOf('data:') !== 0) return;
+        var data = line.slice(5).trim();
+        if (data === '[DONE]') return;
+        try {
+          var obj = JSON.parse(data);
+          var delta = obj.choices && obj.choices[0] && obj.choices[0].delta;
+          var piece = delta && delta.content ? delta.content : '';
+          if (piece) { full += piece; contentEl.textContent = full; scrollBottom(); }
+        } catch (e) {}
+      });
+      return pump();
+    });
+  }
+  return pump();
+}
+
+function friendlyError(err) {
+  var m = String(err.message || err);
+  if (m.indexOf('401') >= 0) return 'API Key 无效或已过期';
+  if (m.indexOf('429') >= 0) return '请求太频繁或免费额度用完了';
+  if (m.indexOf('Failed to fetch') >= 0 || m.indexOf('Network') >= 0) return '网络请求失败（检查网络 / 跨域）';
+  return m.slice(0, 80);
+}
+
+/* ========== 其它交互 ========== */
+function clearChat() {
+  if (!confirm('确定清空所有楼层和对话记录吗？')) return;
+  history = [];
+  floorNo = 1;
+  var floors = document.getElementById('floors');
+  floors.innerHTML = '<div class="empty" id="emptyState"><div class="big">💬</div><div>楼下空空如也，来发第一句吧</div></div>';
+  updateCounts();
+}
+function toggleFollow(btn) {
+  if (btn.classList.toggle('followed')) btn.textContent = '已关注 ✓';
+  else btn.textContent = '+ 关注';
+}
+
+init();
+</script>
+</body>
+</html>

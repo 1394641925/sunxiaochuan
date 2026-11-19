@@ -1085,7 +1085,7 @@ function renderQuick(){var row=document.getElementById('quickRow');row.innerHTML
 /* ===== 群聊：真·多人聊天室 ===== */
 var GC_ROOMS={'blue':'孙笑川吧蓝牌群','sign':'签到群','yellow':'孙笑川吧黄牌群'};
 var GC_COLORS=['#4e6ef2','#ff8a5a','#34a853','#9b59b6','#e67e22','#16a085','#e74c3c','#2c97de'];
-var gcRoom='',gcTimer=null,gcLastTs=0,gcAdmin=false,gcAdminPass='';
+var gcRoom='',gcTimer=null,gcLastTs=0,gcAdmin=false,gcAdminPass='',gcGen=0;
 var GC_API='https://xcs-ai.pages.dev';
 function gcNick(){
   var n=localStorage.getItem('xcs_nick_v1');
@@ -1112,7 +1112,7 @@ function editNick(){
   toast('昵称已改：'+n);
 }
 function openGroupChat(room,title){
-  gcRoom=room;
+  gcRoom=room;gcGen++;
   document.getElementById('gTitle').textContent=GC_ROOMS[room]||title||'聊天频道';
   document.getElementById('gNick').textContent=gcNick();
   document.getElementById('gMsgs').innerHTML='';
@@ -1165,8 +1165,10 @@ function toggleAdmin(){
   toast('吧务模式已开启，点消息即可删除');
 }
 function gcPoll(full){
+  var gen=gcGen;
   fetch(GC_API+'/api/chat/list?room='+gcRoom+(full||gcLastTs===0?'':'&after='+gcLastTs))
     .then(function(r){return r.json();}).then(function(d){
+      if(gen!==gcGen)return;
       if(!d.ok)return;
       var box=document.getElementById('gMsgs');
       if(full){box.innerHTML='';if(!(d.msgs||[]).length){box.appendChild(gcBubble(null,false,false,'群里还没有人说话，来当第一个吧'));}}
@@ -1198,7 +1200,7 @@ function gcSend(){
     .then(function(r){return r.json();}).then(function(d){
       if(d.ok){
         var real=gcBubble(d.msg,true,false);
-        pendingEl.replaceWith(real);
+        if(pendingEl.isConnected){pendingEl.replaceWith(real);}else{box.appendChild(real);}
         box.scrollTop=box.scrollHeight;
         gcLastTs=Math.max(gcLastTs,d.msg.t);
       }else{

@@ -182,6 +182,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .modal .btns button{flex:1;padding:11px;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer}
 .btn-cancel{background:#f0f1f5;color:#666}
 .btn-ok{background:#4e6ef2;color:#fff}
+/* 功能面板内元素 */
+.panel-modal{max-width:380px}
+.panel-search{display:flex;gap:8px;margin:6px 0 12px}
+.panel-search input{flex:1;border:1px solid #ddd;border-radius:8px;padding:9px 10px;font-size:14px;min-width:0}
+.panel-search button{background:#4e6ef2;color:#fff;border:none;border-radius:8px;padding:0 16px;font-size:14px;font-weight:700;cursor:pointer}
+.panel-list{display:flex;flex-direction:column;gap:0;max-height:50vh;overflow-y:auto}
+.panel-row{display:flex;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid #f0f1f5;cursor:pointer;font-size:14px;color:#333}
+.panel-row:active{background:#f7f8fc}
+.panel-row .pr-ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#4e6ef2,#7b5cfa);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;font-size:14px}
+.panel-row .pr-main{flex:1;min-width:0}
+.panel-row .pr-name{font-weight:600;color:#1f2329}
+.panel-row .pr-desc{font-size:12px;color:#9195a3;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.panel-row .pr-time{font-size:11px;color:#c4c8d0;flex-shrink:0}
+.panel-empty{text-align:center;color:#9195a3;font-size:13px;padding:24px 0}
+.panel-hint{font-size:12px;color:#9195a3;line-height:1.6;margin:4px 0 10px}
+.panel-profile{text-align:center;padding:6px 0}
+.panel-profile .pp-ava{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#4e6ef2,#7b5cfa);color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;margin:0 auto 10px}
+.panel-profile .pp-name{font-size:17px;font-weight:800;color:#1f2329}
+.panel-profile .pp-stat{display:flex;justify-content:center;gap:28px;margin-top:14px;font-size:13px;color:#666}
+.panel-profile .pp-stat b{display:block;font-size:18px;color:#4e6ef2}
+.share-row{display:flex;gap:12px;justify-content:center;padding:10px 0}
+.share-btn{flex:1;text-align:center;background:#f5f6fa;border-radius:10px;padding:14px 4px;font-size:12px;color:#555;cursor:pointer}
+.share-btn:active{background:#eef1ff}
+.share-btn .si{font-size:22px;display:block;margin-bottom:5px}
 .lvtable{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
 .lvtable td{padding:4px 6px;border-bottom:1px solid #f0f1f5}
 .lvtable tr.cur td{background:#eef1ff;color:#4e6ef2;font-weight:700}
@@ -261,11 +285,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   <!-- 横幅 -->
   <div class="banner">
     <div class="banner-top">
-      <div class="nav-btn" onclick="toast('返回上一页')"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></div>
+      <div class="nav-btn" onclick="toast('已经在孙笑川吧首页啦')"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></div>
       <div class="nav-right">
-        <div class="nav-btn" onclick="toast('搜索吧内内容')"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></div>
-        <div class="nav-btn" onclick="toast('暂无新消息')"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-        <div class="nav-btn" onclick="toast('分享本吧')"><svg viewBox="0 0 24 24"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg></div>
+        <div class="nav-btn" onclick="openSearch()"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></div>
+        <div class="nav-btn" onclick="openMessages()"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="nav-btn" onclick="openShare()"><svg viewBox="0 0 24 24"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4"/><path d="M12 2v13"/></svg></div>
       </div>
     </div>
     <div class="bar-info">
@@ -380,13 +404,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     <div class="cr-head">
       <div class="cr-back" onclick="closeChat()">‹</div>
       <div class="cr-title"><span class="bar-tag">孙笑川吧</span></div>
-      <div class="h-ico" onclick="toast('搜索吧内内容')">🔍</div>
-      <div class="h-ico" onclick="toast('分享本吧')">↗</div>
+      <div class="h-ico" onclick="openSearch()">🔍</div>
+      <div class="h-ico" onclick="openShare()">↗</div>
       <div class="cr-mode" id="crMode" onclick="openSetting()">演示模式 ⚙</div>
     </div>
     <div class="filter-bar">
-      <div class="fb-left"><b>全部回复</b><span>只看楼主</span></div>
-      <div class="fb-right"><b>热门</b><span>正序</span><span>倒序</span></div>
+      <div class="fb-left"><b id="fbAll" onclick="setFilter('all',this)">全部回复</b><span id="fbLz" onclick="setFilter('lz',this)">只看楼主</span></div>
+      <div class="fb-right"><b id="sortHot" onclick="setSort('hot',this)">热门</b><span id="sortAsc" onclick="setSort('asc',this)">正序</span><span id="sortDesc" onclick="setSort('desc',this)">倒序</span></div>
     </div>
     <div class="cr-floors" id="floors"></div>
     <div class="emo-panel" id="emoPanel">
@@ -400,13 +424,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
       <button class="send" id="sendBtn" onclick="send()">发送</button>
     </div>
     <div class="cr-bar">
-      <div class="cb-item" onclick="toast('回复区')"><b id="barRep">3.3W</b><span>回复</span></div>
-      <div class="cb-item" onclick="toast('点赞')"><b id="barLike">7.3W</b><span>点赞</span></div>
-      <div class="cb-item" onclick="toast('收藏')"><b id="barFav">479</b><span>收藏</span></div>
+      <div class="cb-item" onclick="document.getElementById('input').focus()"><b id="barRep">3.3W</b><span>回复</span></div>
+      <div class="cb-item" id="likeBtn" onclick="doLike()"><b id="barLike">7.3W</b><span>点赞</span></div>
+      <div class="cb-item" id="favBtn" onclick="doFav()"><b id="barFav">479</b><span>收藏</span></div>
     </div>
   </div>
 
   <div class="toast" id="toast"></div>
+
+  <!-- 通用功能面板（搜索/消息/我的/分享/楼中楼） -->
+  <div class="modal-mask" id="panelMask">
+    <div class="modal panel-modal">
+      <h3 id="panelTitle">面板</h3>
+      <div id="panelBody"></div>
+      <div class="btns"><button class="btn-ok" onclick="closePanel()">关闭</button></div>
+    </div>
+  </div>
 
   <!-- 等级表弹窗 -->
   <div class="modal-mask" id="lvMask">
@@ -618,7 +651,8 @@ function navTab(el,name){
   el.classList.add('active');
   if(name==='视频') switchTab('shipin',null);
   else if(name==='首页') switchTab('jinghua',null);
-  else toast(name+'功能开发中，勿cue');
+  else if(name==='消息') openMessages();
+  else if(name==='我的') openProfile();
 }
 /* 悬浮球拖动 + 点击打开对线 */
 (function(){
@@ -710,6 +744,104 @@ function nowTime(){var d=new Date();return String(d.getHours()).padStart(2,'0')+
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 function renderText(s){return esc(s).replace(/\[([^\]]+)\]/g,function(m,n){var e=EMOJIS.find(function(x){return x.n===n;});return e?'<img class="emo" src="'+e.d+'">':m;});}
 function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show');},1600);}
+/* ===== 通用功能面板 ===== */
+function showPanel(title,html){document.getElementById('panelTitle').textContent=title;document.getElementById('panelBody').innerHTML=html;document.getElementById('panelMask').classList.add('show');}
+function closePanel(){document.getElementById('panelMask').classList.remove('show');}
+/* 搜索吧内帖子 */
+function openSearch(){
+  showPanel('搜索吧内帖子','<p class="panel-hint">输入关键词，搜索孙吧的全部帖子标题和正文。</p><div class="panel-search"><input id="searchInput" placeholder="试试：语录、考古、等级…" oninput="doSearch()" onkeydown="if(event.key===\'Enter\')doSearch()"><button onclick="doSearch()">搜索</button></div><div class="panel-list" id="searchResult"></div>');
+  doSearch(); setTimeout(function(){var i=document.getElementById('searchInput');if(i)i.focus();},100);
+}
+function doSearch(){
+  var kw=(document.getElementById('searchInput')||{}).value||'';kw=kw.trim();
+  var all=[];Object.keys(POSTS).forEach(function(k){POSTS[k].forEach(function(p){all.push(p);});});
+  var list=kw?all.filter(function(p){return (p.t+p.e+(p.c||[]).join('')).indexOf(kw)>=0;}):all.slice(0,8);
+  var box=document.getElementById('searchResult');if(!box)return;
+  if(!list.length){box.innerHTML='<div class="panel-empty">没搜到「'+esc(kw)+'」相关的帖子，换个词试试</div>';return;}
+  box.innerHTML=list.slice(0,15).map(function(p,i){
+    return '<div class="panel-row" onclick="jumpPost('+all.indexOf(p)+')"><div class="pr-ava">'+esc(p.a.charAt(0))+'</div><div class="pr-main"><div class="pr-name">'+esc(p.t)+'</div><div class="pr-desc">'+esc(p.e)+'</div></div><div class="pr-time">💬'+p.rep+'</div></div>';
+  }).join('');
+  window._searchList=list;
+}
+function jumpPost(idx){closePanel();var all=[];Object.keys(POSTS).forEach(function(k){POSTS[k].forEach(function(p){all.push(p);});});openPost(all[idx]);}
+/* 消息中心 */
+function openMessages(){
+  var rows=[
+    ['系统','欢迎来到孙笑川吧！签到+2、回帖+3，升级解锁头衔','刚刚'],
+    ['带带大师兄','楼上典中典，我直接一个滑稽','10分钟前'],
+    ['抽象带师','新人入吧指南看了吗？勿cue','1小时前'],
+    ['狗粉丝头子','考古挖坟，经典永不过时[滑稽]','昨天']
+  ];
+  var html='<p class="panel-hint">你有 '+rows.length+' 条新消息（演示内容）。</p><div class="panel-list">'+rows.map(function(r){
+    return '<div class="panel-row" onclick="readMsg(\''+esc(r[0])+'\')"><div class="pr-ava">'+esc(r[0].charAt(0))+'</div><div class="pr-main"><div class="pr-name">'+esc(r[0])+'</div><div class="pr-desc">'+esc(r[1])+'</div></div><div class="pr-time">'+r[2]+'</div></div>';
+  }).join('')+'</div>';
+  showPanel('消息',html);
+}
+function readMsg(n){closeChat();openChat('与 '+n+' 对线');}
+/* 我的资料 */
+function openProfile(){
+  var info=levelInfo(lvState.exp);
+  var today=new Date().toDateString();var signed=lvState.lastSign===today;
+  var html='<div class="panel-profile"><div class="pp-ava">吧</div><div class="pp-name">贴吧用户 · 1394641925</div><div class="lv-badge" style="display:inline-block;margin-top:8px;background:#4e6ef2;color:#fff">LV'+info.lv+' '+esc(info.title)+'</div><div class="pp-stat"><span><b>'+lvState.exp+'</b>经验</span><span><b>'+(signed?'已签':'未签')+'</b>今日签到</span><span><b>'+levelInfo(lvState.exp).need+'</b>升级所需</span></div></div><p class="panel-hint" style="text-align:center;margin-top:16px">签到 +2 经验，回帖 +3 经验，攒经验升头衔。</p>';
+  showPanel('我的资料',html);
+}
+/* 分享 */
+function openShare(){
+  var url=location.href;
+  var html='<p class="panel-hint">把孙笑川吧分享给吧友：</p><div class="share-row"><div class="share-btn" onclick="doShare(\'微信\')"><span class="si">💬</span>微信</div><div class="share-btn" onclick="doShare(\'QQ\')"><span class="si">🐧</span>QQ</div><div class="share-btn" onclick="copyLink()"><span class="si">🔗</span>复制链接</div></div><p class="panel-hint" style="word-break:break-all;text-align:center">'+esc(url)+'</p>';
+  showPanel('分享本吧',html);window._shareUrl=url;
+}
+function doShare(n){toast('已打开'+n+'分享（演示）');}
+function copyLink(){
+  var url=window._shareUrl||location.href;
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(function(){toast('链接已复制');}).catch(function(){fallbackCopy(url);});}
+  else fallbackCopy(url);
+}
+function fallbackCopy(url){var t=document.createElement('textarea');t.value=url;document.body.appendChild(t);t.select();try{document.execCommand('copy');toast('链接已复制');}catch(e){toast('请手动复制');}document.body.removeChild(t);}
+/* 筛选：只看楼主 */
+var onlyLz=false;
+function setFilter(type,el){
+  onlyLz=(type==='lz');
+  var a=document.getElementById('fbAll'),b=document.getElementById('fbLz');
+  if(a)a.style.color=onlyLz?'#9195a3':'#1f2329'; if(b)b.style.color=onlyLz?'#1f2329':'#9195a3';
+  applyFloorFilter();
+  toast(onlyLz?'只看楼主':'全部回复');
+}
+/* 排序：热门/正序/倒序 */
+var sortMode='hot';
+function setSort(mode,el){
+  sortMode=mode;
+  ['hot','asc','desc'].forEach(function(k){var e=document.getElementById('sort'+k.charAt(0).toUpperCase()+k.slice(1));if(e)e.style.color=(k===mode)?'#4e6ef2':'#9195a3';});
+  applyFloorFilter();
+  toast(({hot:'按热门排序',asc:'按正序排序',desc:'按倒序排序'})[mode]);
+}
+function applyFloorFilter(){
+  var floors=document.getElementById('floors');if(!floors)return;
+  var nodes=Array.prototype.slice.call(floors.querySelectorAll('.floor'));
+  if(sortMode==='desc'){nodes.reverse().forEach(function(n){floors.appendChild(n);});}
+  else if(sortMode==='asc'){nodes.sort(function(a,b){return (a._idx||0)-(b._idx||0);}).forEach(function(n){floors.appendChild(n);});}
+  nodes.forEach(function(n,idx){n._idx=idx;});
+  if(onlyLz){nodes.forEach(function(n){n.style.display=n._isLz?'':'none';});}
+  else{nodes.forEach(function(n){n.style.display='';});}
+}
+/* 点赞/收藏 */
+var liked=false,faved=false;
+function doLike(){
+  liked=!liked;var b=document.getElementById('barLike');
+  var base=parseBarNum(b._base||b.textContent);b._base=b._base||base;
+  b.textContent=liked?fmtNum(base+1):fmtNum(base);
+  var btn=document.getElementById('likeBtn');btn.style.color=liked?'#ff5a5a':'';
+  toast(liked?'👍 已点赞':'取消点赞');
+}
+function doFav(){
+  faved=!faved;var b=document.getElementById('barFav');
+  var base=parseBarNum(b._base||b.textContent);b._base=b._base||base;
+  b.textContent=faved?fmtNum(base+1):fmtNum(base);
+  document.getElementById('favBtn').style.color=faved?'#ffb04a':'';
+  toast(faved?'⭐ 已收藏':'取消收藏');
+}
+function parseBarNum(s){s=String(s);if(s.indexOf('W')>=0)return Math.round(parseFloat(s)*10000);return parseInt(s)||0;}
+function fmtNum(n){return n>=10000?(n/10000).toFixed(1)+'W':String(n);}
 function pickTag(el){var ts=el.parentNode.children;for(var i=0;i<ts.length;i++)ts[i].classList.remove('active');el.classList.add('active');}
 function renderQuick(){var row=document.getElementById('quickRow');row.innerHTML='';QUICK.forEach(function(q){var d=document.createElement('div');d.className='quick';d.textContent=q;d.onclick=function(){document.getElementById('input').value=q;};row.appendChild(d);});}
 function openChat(name){
@@ -720,14 +852,40 @@ function openChat(name){
   addFloor({ai:true,name:'孙笑川',lv:10,title:'进阶元老',years:4,vip:1,like:'8721',time:'05-05',loc:'上海',text:'哟，吧友，找孙哥对线？有啥想说的尽管放马过来',sys:true});
   renderQuick();renderEmoPanel();scrollBottom();
 }
-/* 真实贴吧对线楼层素材（取材于孙吧热帖"维塞罗神贴"等真实内容） */
+/* 真实贴吧对线楼层素材（取材于孙吧热帖，楼中楼用孙吧味复读黑话） */
 var REAL_FLOORS=[
   {name:'维塞罗',lv:13,title:'意见领袖',years:5,vip:1,like:'8721',text:'上路被三人越塔，打野不在我怎么去，你告诉我？上路被三人越塔我都能保得住他吗？如果盲僧在的话我为什么不在？盲僧都不在为什么我要去啊？你今天要说不明白，明天就被车创死，你懂不懂？我就看不惯你这种低分狗在这抬杠！',time:'07-25',loc:'湖南',
-   quotes:[['迷亭枫','史前巨鼠！'],['ADay钙','我去老资历'],['抽象带师','典中典'],['狗粉丝头子','绷不住了']],count:'2844'},
+   quotes:[['迷亭枫','典'],['ADay钙','典中典'],['抽象带师','绷不住了'],['狗粉丝头子','乐'],['贴吧用户_aRPtQ61','3'],['九黎勿忧','本来以为是高手，结果是个÷']],count:'2844'},
   {name:'维塞罗',lv:13,title:'意见领袖',years:5,vip:1,like:'633',text:'你白银觉得是我的锅，那就是我的锅，为什么？因为白银说的话，就像是一个癌症晚期患者说的话一样，你总要给人最后一段时间一个好的回忆吧。白银这个段位很尴尬，上不去下不来，卡在这里了，想操作又操作不起来，掉下去又觉得不值得。',time:'07-25',loc:'湖南',
-   quotes:[['贴1吧2用3户','典中典'],['空洞骑前辈','蚌埠住了'],['九黎勿忧','太抽象了'],['贴吧用户_JaUCWvQ','乐']],count:'785'},
+   quotes:[['贴1吧2用3户','典中典'],['空洞骑前辈','蚌埠住了'],['九黎勿忧','这比喻太抽象了'],['贴吧用户_JaUCWvQ','乐'],['乐子人','3'],['带善人','你礼貌吗']],count:'785'},
   {name:'带带大师兄',lv:15,title:'意见领袖',years:6,like:'2103',text:'大哥，你家乡有400鸡鸭吗？白拿白拿吗？哇~~是勒！是勒！妹儿，要不要买单？笨猪！！弟妹，车子到哪哒？你真买了，笨死哒！',time:'05-05',loc:'四川',
-   quotes:[['抽象带师','绷不住了'],['狗粉丝头子','这波我在大气层']],count:'1206'}
+   quotes:[['抽象带师','绷不住了'],['狗粉丝头子','这波我在大气层'],['迷亭枫','典'],['ADay钙','乐']],count:'1206'},
+  {name:'逆天灬某人',lv:8,title:'铁杆会员',years:3,like:'66',text:'这就是典中典，孝死我了，绷不住了兄弟们，这波属于是',time:'07-25',loc:'河北',
+   quotes:[['乐子人','典'],['抽象带师','引用层都不看就绷']],count:'233'},
+  {name:'抽象带师',lv:11,title:'知名人士',years:4,like:'998',text:'我不装了，我摊牌了，我就是传说中的网恋教父。网恋被骗8000块，站在成都双流机场一个晚上，第二次异地恋牵了牵手又被骗两万，在恋爱的道路上一去不复返。',time:'07-24',loc:'广东',
+   quotes:[['乐子人','典中典'],['考古学家','绷不住了'],['狗粉丝','乐'],['带善人','经典的']],count:'556'},
+  {name:'狗粉丝头子',lv:9,title:'铁杆会员',years:3,like:'742',text:'你们这些水友黑粉，你们是水明星，你们是黑明星，你们才是明星。我是个锤子明星，我天天被骂我还明星。你们有看过明星一个月3500块钱吗？有吗？有这种明星吗？',time:'07-24',loc:'上海',
+   quotes:[['迷亭枫','太真实了'],['ADay钙','儒雅随和'],['贴吧用户_aRPtQ61','典'],['九黎勿忧','3']],count:'389'},
+  {name:'你礼貌吗',lv:7,title:'核心会员',years:2,like:'188',text:'经典，我说怎么这么眼熟，原来是在别的地方看过的典中典，属于是抄都抄不明白',time:'07-24',loc:'山东',
+   quotes:[['乐子人','乐'],['抽象带师','绷'],['狗粉丝','典中典']],count:'121'},
+  {name:'崎岖Misaki',lv:6,title:'核心会员',years:2,like:'321',text:'每日一 Water：今天又是抽象的一天[滑稽]。签到+3，水贴不解释，勿cue。',time:'07-24',loc:'浙江',
+   quotes:[['萌新','大佬带带我'],['乐子人','水'],['带善人','3']],count:'88'},
+  {name:'退役抽象选手',lv:14,title:'意见领袖',years:6,like:'1560',text:'抽象≠生活，这是孙哥早就教导过我们的。玩梗归玩梗，别把抽象话带进现实生活。记住：抽象/生活=1，ln(抽象/生活)=0，|抽象-生活|<ε，人均带专生。',time:'07-23',loc:'北京',
+   quotes:[['数学带师','带专生实锤'],['抽象带师','典中典'],['乐子人','这波我在大气层'],['狗粉丝','乐'],['贴吧用户_aRPtQ61','3']],count:'933'},
+  {name:'NMSL选手',lv:10,title:'知名人士',years:4,like:'421',text:'都别吵了，我是日本人，我来中国留学五年了。すみません、われは核地雷モンキーDルフィ，请务必对我儒雅随和。',time:'07-23',loc:'日本',
+   quotes:[['迷亭枫','典中典'],['ADay钙','乐'],['抽象带师','绷不住了'],['乐子人','3']],count:'444'},
+  {name:'经典复读机',lv:5,title:'正式会员',years:2,like:'52',text:'典',time:'07-23',loc:'四川',
+   quotes:[['乐子人','典'],['狗粉丝','典'],['带善人','典'],['抽象带师','典']],count:'66'},
+  {name:'带带大师兄',lv:15,title:'意见领袖',years:6,like:'2333',text:'要我一直笑吗？对不起，做不到。我这个人脸就这样，天生的，改不了，勿cue。',time:'07-22',loc:'四川',
+   quotes:[['乐子人','儒雅随和'],['迷亭枫','典中典'],['抽象带师','绷'],['狗粉丝','乐'],['贴吧用户_aRPtQ61','3']],count:'1777'},
+  {name:'新来的吧友',lv:1,title:'初级粉丝',like:'5',text:'新人报到！刚进孙吧有点紧张，看了精华帖属实看不懂，什么抽象/生活=1，感觉进了新世界。大佬们带带我，勿cue。',time:'07-22',loc:'江苏',
+   quotes:[['热心吧友','欢迎新人'],['带带大师兄','坐下'],['乐子人','典'],['狗粉丝','乐']],count:'12'},
+  {name:'考古挖坟队',lv:12,title:'人气楷模',years:5,like:'680',text:'考古成功的来报到，这贴我三年前就看过，现在还是绷不住，经典永不过时，这就是孙吧的底蕴啊。',time:'07-22',loc:'湖北',
+   quotes:[['迷亭枫','老资历'],['ADay钙','典中典'],['乐子人','3'],['抽象带师','乐']],count:'207'},
+  {name:'抗带先锋',lv:9,title:'铁杆会员',years:3,like:'99',text:'不是，你们这些人是不是有什么大病？天天在这复读典，有意思吗？典你妈了个典，这贴吧完了，溜了溜了。',time:'07-21',loc:'河南',
+   quotes:[['乐子人','经典急了'],['狗粉丝','乐'],['抽象带师','典中典'],['带善人','你礼貌吗']],count:'152'},
+  {name:'我直接一个',lv:11,title:'知名人士',years:4,like:'357',text:'我直接一个大问号，这都能吵起来？典中典，属实给我看乐了，这就是孙吧的日常吗，爱了爱了。',time:'07-21',loc:'福建',
+   quotes:[['迷亭枫','典'],['乐子人','乐'],['贴吧用户_aRPtQ61','3'],['抽象带师','绷不住了']],count:'318'}
 ];
 function openPost(p){
   document.getElementById('chatroom').classList.add('show');
@@ -744,7 +902,16 @@ function openPost(p){
 }
 function setBar(o){
   if(o.rep!=null)document.getElementById('barRep').textContent=o.rep;
-  if(o.like!=null)document.getElementById('barLike').textContent=o.like;
+  if(o.like!=null){var bl=document.getElementById('barLike');bl.textContent=o.like;bl._base=null;}
+  var bf=document.getElementById('barFav');if(bf)bf._base=null;
+  liked=false;faved=false;
+  var lb=document.getElementById('likeBtn');if(lb)lb.style.color='';
+  var fb=document.getElementById('favBtn');if(fb)fb.style.color='';
+  /* 重置筛选/排序 */
+  onlyLz=false;sortMode='hot';
+  var fa=document.getElementById('fbAll'),fl=document.getElementById('fbLz');
+  if(fa)fa.style.color='#1f2329';if(fl)fl.style.color='#9195a3';
+  ['hot','asc','desc'].forEach(function(k){var e=document.getElementById('sort'+k.charAt(0).toUpperCase()+k.slice(1));if(e)e.style.color=(k==='hot')?'#4e6ef2':'#9195a3';});
 }
 function closeChat(){document.getElementById('chatroom').classList.remove('show');document.getElementById('emoPanel').classList.remove('show');}
 function addFloor(opts){
@@ -764,12 +931,34 @@ function addFloor(opts){
   var quote='';
   if(opts.quotes&&opts.quotes.length){
     var rows=opts.quotes.map(function(q){return '<div class="quote-row"><b>'+esc(q[0])+'：</b>'+renderText(q[1])+'</div>';}).join('');
-    quote='<div class="quote-block">'+rows+(opts.count?'<div class="quote-more">查看全部'+opts.count+'条回复 ›</div>':'')+'</div>';
+    var more=opts.count?'<div class="quote-more" onclick="openQuote(\''+esc(name).replace(/'/g,"")+'\',\''+(opts.count||'')+'\',this)">查看全部'+opts.count+'条回复 ›</div>':'';
+    quote='<div class="quote-block">'+rows+more+'</div>';
   }
   div.innerHTML=ava+'<div class="floor-main"><div class="floor-top"><span class="floor-name">'+esc(name)+'</span>'+lz+badges+like+'</div><div class="floor-content"></div>'+tail+timeLoc+quote+'</div>';
+  div._isLz=!!(opts.sys||opts.isLz);
+  div._idx=floors.children.length;
   floors.appendChild(div);
   div.querySelector('.floor-content').innerHTML=renderText(opts.text);
   scrollBottom();return {content:div.querySelector('.floor-content')};
+}
+/* 楼中楼查看全部 */
+function openQuote(name,count,el){
+  var base=(el&&el.parentNode)?Array.prototype.slice.call(el.parentNode.querySelectorAll('.quote-row')).map(function(r){return r.textContent;}):[];
+  var more=base.concat([
+    '乐子人：典',
+    '狗粉丝：乐',
+    '贴吧用户_aRPtQ61：3',
+    '带善人：你礼貌吗',
+    '抽象带师：这波我在大气层',
+    '迷亭枫：典中典',
+    'ADay钙：我去老资历',
+    '九黎勿忧：本来以为是高手，结果是÷',
+    '逆天灬某人：孝死我了，绷不住了',
+    '经典复读机：典',
+    '热心吧友：大佬带带我',
+    '抗带先锋：这贴吧完了，溜了溜了'
+  ]);
+  showPanel(name+' 的回复（共'+count+'条）','<p class="panel-hint">展示部分楼中楼回复（演示）：</p><div class="panel-list">'+more.map(function(t){return '<div class="panel-row" style="cursor:default"><div class="pr-main"><div class="pr-desc" style="font-size:13px;color:#333;white-space:normal">'+esc(t)+'</div></div></div>';}).join('')+'</div>');
 }
 function scrollBottom(){var f=document.getElementById('floors');f.scrollTop=f.scrollHeight;}
 function send(){

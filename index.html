@@ -564,14 +564,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   <div class="modal-mask" id="settingMask">
     <div class="modal">
       <h3>AI 接入设置</h3>
-      <p>默认已接好孙哥的免费 AI，直接聊就行。想用<strong>自己的 Key</strong>？填在下面走你自己的额度，免口令。</p>
+      <p>默认已接好孙哥的免费 AI，打开直接聊。想用<strong>自己的 Key</strong>？选直连并填自己的 Key，走自己额度。</p>
       <label>接入方式</label>
-      <select id="setProvider" onchange="renderModelOpts()"><option value="cloudflare">孙哥的免费 AI（默认）</option><option value="siliconflow">硅基流动（自带Key直连）</option><option value="deepseek">DeepSeek（自带Key直连）</option><option value="demo">演示模式（离线兜底）</option></select>
+      <select id="setProvider" onchange="renderModelOpts()"><option value="siliconflow">孙哥的免费 AI（默认·直连硅基流动）</option><option value="cloudflare">Cloudflare 中转（隐藏Key）</option><option value="deepseek">DeepSeek（自带Key直连）</option><option value="demo">演示模式（离线兜底）</option></select>
       <label>API 地址（默认已填好，一般不用动）</label>
-      <input id="setBase" type="text" placeholder="https://…workers.dev">
+      <input id="setBase" type="text" placeholder="https://api.siliconflow.cn/v1/chat/completions">
       <label>自带 API Key（想用自己额度才填，留空用孙哥的）</label>
       <input id="setKey" type="text" placeholder="sk-...（可留空）">
-      <label>访问口令（用默认 AI 时已内置）</label>
+      <label>访问口令（仅 Cloudflare 中转用）</label>
       <input id="setPass" type="text" placeholder="可留空">
       <label>模型 ID（可留空用默认）</label>
       <input id="setModel" type="text" placeholder="默认 THUDM/GLM-4-9B-0414">
@@ -723,8 +723,9 @@ function navTab(el,name){
 
 /* ===== 等级/签到系统 ===== */
 var LS_CFG='xcs_cfg_v1', LS_LV='xcs_level_v2';
-/* 默认配置：内置孙哥的免费 AI（Cloudflare 中转），打开即用，无需任何配置 */
-var DEFAULT_CFG={provider:'cloudflare',apiBase:'https://sunxiaochuan-ai.sunxiaochuan666.workers.dev',apiKey:'',pass:'sunxiaochuan666',model:''};
+/* 默认配置：浏览器直连硅基流动免费模型，打开即用（workers.dev 在国内被污染，故默认走直连） */
+var BUILTIN_KEY='sk-lqiuwqtdmvoskonsyfhrmochxfggqibgbyzqtdlldirjmusd';
+var DEFAULT_CFG={provider:'siliconflow',apiBase:'https://api.siliconflow.cn/v1/chat/completions',apiKey:BUILTIN_KEY,pass:'',model:'THUDM/GLM-4-9B-0414'};
 var config=loadCfg();
 var lvState=loadLv();
 function loadCfg(){ try{var r=localStorage.getItem(LS_CFG);if(r)return JSON.parse(r);}catch(e){} return JSON.parse(JSON.stringify(DEFAULT_CFG)); }
@@ -991,7 +992,7 @@ function pickTag(el){var ts=el.parentNode.children;for(var i=0;i<ts.length;i++)t
 function renderQuick(){var row=document.getElementById('quickRow');row.innerHTML='';QUICK.forEach(function(q){var d=document.createElement('div');d.className='quick';d.textContent=q;d.onclick=function(){document.getElementById('input').value=q;};row.appendChild(d);});}
 function openChat(name){
   document.getElementById('chatroom').classList.add('show');
-  document.getElementById('crMode').textContent=isDemo()?'演示模式 ⚙':(config.provider==='cloudflare'&&!config.apiKey?'孙哥的AI ⚙':PROVIDERS[config.provider].name+' ⚙');
+  document.getElementById('crMode').textContent=isDemo()?'演示模式 ⚙':(config.provider==='siliconflow'&&config.apiKey===BUILTIN_KEY?'孙哥的AI ⚙':PROVIDERS[config.provider].name+' ⚙');
   setBar({rep:'3.3W',like:'7.3W',fav:'479'});
   var floors=document.getElementById('floors');floors.innerHTML='';chatHistory=[];
   addFloor({ai:true,name:'孙笑川',lv:10,title:'进阶元老',years:4,vip:1,like:'8721',time:'05-05',loc:'上海',text:'哟，吧友，找孙哥对线？有啥想说的尽管放马过来',sys:true});
@@ -1065,7 +1066,7 @@ var FLOOR_POOLS={
 
 function openPost(p){
   document.getElementById('chatroom').classList.add('show');
-  document.getElementById('crMode').textContent=isDemo()?'演示模式 ⚙':(config.provider==='cloudflare'&&!config.apiKey?'孙哥的AI ⚙':PROVIDERS[config.provider].name+' ⚙');
+  document.getElementById('crMode').textContent=isDemo()?'演示模式 ⚙':(config.provider==='siliconflow'&&config.apiKey===BUILTIN_KEY?'孙哥的AI ⚙':PROVIDERS[config.provider].name+' ⚙');
   setBar({rep:p.rep>=10000?(p.rep/10000).toFixed(1)+'W':p.rep,like:p.like>=10000?(p.like/10000).toFixed(1)+'W':p.like,fav:'479'});
   var floors=document.getElementById('floors');floors.innerHTML='';chatHistory=[];
   /* 主楼：标题+正文 */
@@ -1168,7 +1169,7 @@ function callAI(ce,text){
   }
   function emoKind(txt){if(isInsult(txt))return 'attack';if(/天皇|朕|皇帝|陛下|孙笑川是天皇/.test(txt))return 'tenno';return 'normal';}
   var p=PROVIDERS[config.provider],model=config.model||p.defaultModel;
-  var url=(config.provider==='cloudflare')?(config.apiBase||DEFAULT_CFG.apiBase):p.url;
+  var url=config.apiBase||p.url||DEFAULT_CFG.apiBase;
   var headers={'Content-Type':'application/json'};
   if(config.provider==='cloudflare'){
     if(config.pass) headers['X-Access-Pass']=config.pass;
@@ -1210,7 +1211,7 @@ function openSetting(){
   var c=config||DEFAULT_CFG;
   document.getElementById('setProvider').value=c.provider||'cloudflare';
   document.getElementById('setBase').value=c.apiBase||'';
-  document.getElementById('setKey').value=c.apiKey||'';
+  document.getElementById('setKey').value=(c.apiKey&&c.apiKey!==BUILTIN_KEY)?c.apiKey:'';
   document.getElementById('setPass').value=c.pass||'';
   document.getElementById('setModel').value=c.model||'';
   renderModelOpts();document.getElementById('settingMask').classList.add('show');
@@ -1218,10 +1219,13 @@ function openSetting(){
 function closeSetting(){document.getElementById('settingMask').classList.remove('show');}
 function renderModelOpts(){var p=PROVIDERS[document.getElementById('setProvider').value];document.getElementById('setModel').placeholder='默认：'+(p.defaultModel||'无');}
 function saveSetting(){
-  config={provider:document.getElementById('setProvider').value,apiBase:document.getElementById('setBase').value.trim(),apiKey:document.getElementById('setKey').value.trim(),pass:document.getElementById('setPass').value.trim(),model:document.getElementById('setModel').value.trim()};
-  if(config.provider==='cloudflare'&&!config.apiBase)config.apiBase=DEFAULT_CFG.apiBase;
+  var keyIn=document.getElementById('setKey').value.trim();
+  config={provider:document.getElementById('setProvider').value,apiBase:document.getElementById('setBase').value.trim(),apiKey:keyIn,pass:document.getElementById('setPass').value.trim(),model:document.getElementById('setModel').value.trim()};
+  // 直连模式 Key 留空 → 用内置免费 Key（默认就能聊）
+  if(config.provider==='siliconflow'&&!config.apiKey){config.apiKey=BUILTIN_KEY;config.apiBase='https://api.siliconflow.cn/v1/chat/completions';if(!config.model)config.model='THUDM/GLM-4-9B-0414';}
+  if(config.provider==='cloudflare'&&!config.apiBase)config.apiBase='https://sunxiaochuan-ai.sunxiaochuan666.workers.dev';
   localStorage.setItem(LS_CFG,JSON.stringify(config));closeSetting();
-  document.getElementById('crMode').textContent=isDemo()?'演示模式 ⚙':(config.provider==='cloudflare'&&!config.apiKey?'孙哥的AI ⚙':PROVIDERS[config.provider].name+' ⚙');
+  document.getElementById('crMode').textContent=isDemo()?'演示模式 ⚙':(config.provider==='siliconflow'&&config.apiKey===BUILTIN_KEY?'孙哥的AI ⚙':PROVIDERS[config.provider].name+' ⚙');
   toast(isDemo()?'已切回演示模式':'已切换真 AI：'+PROVIDERS[config.provider].name);
 }
 function resetSetting(){

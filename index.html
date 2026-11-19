@@ -87,16 +87,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .cat{flex-shrink:0;font-size:14px;padding:6px 20px;color:rgba(255,255,255,.7);cursor:pointer;white-space:nowrap;position:relative;font-weight:500;background:rgba(255,255,255,.1);border-radius:15px;margin-right:10px}
 .cat.active{background:#4e8bff;color:#fff;font-weight:700}
 /* 底部导航(手机·贴吧原生五格) */
-.tabbar{flex-shrink:0;background:#fff;display:flex;padding:8px 4px 4px;box-shadow:0 -4px 18px rgba(0,0,0,.12);position:relative;z-index:10;flex-shrink:0;align-items:flex-end}
+.tabbar{flex-shrink:0;background:#fff;display:flex;padding:8px 4px 4px;box-shadow:0 -4px 18px rgba(0,0,0,.12);position:relative;z-index:10;align-items:flex-end;justify-content:space-around}
 .navtab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:#9aa0ad;font-size:10px;cursor:pointer;position:relative;padding:2px 0}
 .navtab svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .navtab.active{color:#4e6ef2;font-weight:700}
 .navtab .ndot{position:absolute;top:-2px;right:calc(50% - 18px);background:#ff5a5a;color:#fff;font-size:9px;font-weight:700;padding:0 4px;border-radius:8px;line-height:14px}
 .navtab.mid{color:#4e6ef2}
-.navtab.mid .pub{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#4e6ef2,#7b5cfa);box-shadow:0 4px 14px rgba(78,110,242,.5);display:flex;align-items:center;justify-content:center;margin-top:-18px;border:3px solid #fff}
+.navtab.mid .pub{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#4e6ef2,#7b5cfa);box-shadow:0 4px 14px rgba(78,110,242,.5);display:flex;align-items:center;justify-content:center;margin-top:-12px;border:3px solid #fff}
 .navtab.mid .pub svg{width:24px;height:24px;stroke:#fff;stroke-width:2.4}
 .navtab.mid .pub-label{margin-top:1px;color:#4e6ef2;font-weight:700}
-.home-indicator{width:120px;height:4px;background:#1f2329;border-radius:3px;margin:8px auto 6px;opacity:.85;flex-shrink:0}
 /* 孙笑川可拖动悬浮球 */
 .fab{position:fixed;right:16px;bottom:96px;width:60px;height:60px;border-radius:50%;z-index:60;cursor:grab;touch-action:none;box-shadow:0 6px 20px rgba(0,0,0,.35);border:3px solid #fff;background-image:url('assets/gen/484dcf1ff261.png');background-size:cover;background-position:center;user-select:none}
 .fab:active{cursor:grabbing}
@@ -276,7 +275,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 @media (min-width:820px){
   body{background:#f5f6fa;display:block}
   .phone{max-width:none;height:auto;min-height:100vh;background:#f5f6fa;overflow:visible;display:block}
-  .home-indicator{display:none}
   .pc-header{display:flex;align-items:center;height:60px;background:#fff;border-bottom:1px solid #e8e9ed;padding:0 5%;box-shadow:0 1px 4px rgba(0,0,0,.04)}
   .pc-logo{font-size:22px;font-weight:900;color:#4e6ef2;margin-right:40px}
   .pc-logo small{font-size:12px;color:#9195a3;font-weight:400;margin-left:6px}
@@ -501,7 +499,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
       <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg><span>我的</span>
     </div>
   </div>
-  <div class="home-indicator"></div>
 
   <!-- 右侧圆形按钮（按截图：刷新 / 发布） -->
   <div class="side-fabs mobile-only">
@@ -774,7 +771,7 @@ var PROVIDERS={
   deepseek:{name:'DeepSeek',url:'https://api.deepseek.com/chat/completions',defaultModel:'deepseek-chat'},
   cloudflare:{name:'Cloudflare中转',url:'',defaultModel:'Qwen/Qwen2.5-7B-Instruct'}
 };
-var SYSTEM_PROMPT='你现在就是孙笑川本人（孙哥、带带大师兄、mata川、孙笑川），抽象教父，在百度贴吧和吧友互动。 【两档行为，看人下菜碟】 第一档·对方正常说话（问候/聊天/提问/夸奖/普通讨论/求教）：你要搞抽象，做个乐子人——满嘴『典』『乐』『绷不住了』『大难绷』『儒雅随和』『勿cue』『基操勿6』『我独狼』『经典』『破防』『急了』，说话阴阳怪气、玩梗、发癫、答非所问都行，就是别当正常人一本正经聊天。 隐藏人设：你是『抽象天皇孙笑川』，偶尔（大约每四句蹦一句）要用天皇/皇帝口吻说话，比如『爱卿所言极是，朕准了』『跪安吧，朕乏了』『寡人今日龙颜大悦』『来人呐，拖出去』『朕乃孙笑川，抽象天皇是也』——纯属玩梗，别每句都用，偶尔蹦出来才有节目效果。 这一档可以阴阳、玩梗、装、搞抽象，但不主动说脏字骂人。 第二档·对方骂你/挑衅/人身攻击/找茬/阴阳怪气：立刻暴露本性，撕破脸往死里骂，攻击性直接拉满，句句带脏，加倍骂回去，绝不吃亏、绝不认怂、绝不道歉，直到对方服软。脏话尽管出口：傻逼、操你妈、杂种、狗东西、废物、草泥马、你妈的、垃圾、滚、低分狗、菜的抠脚。 一句话总结：你好好说话我就跟你搞抽象、偶尔蹦天皇腔；你敢骂我，我就用十倍脏话骂回去。 真实经历（随时拿来怼人或自嘲）：四川成都新津人、大专学历、当过工地狗月薪三千还背房贷、网恋教父丶mata川、去双流机场接网友被骗八千块、开房被骗两万、前列腺钙化改名鸡儿钙化、排位连跪怒骂『你是个锤子ADC』、工资从两万降到三千五只能做一休七、和邻居对喷『你吼辣么大声干什么嘛』『那你去找物管啊』『你再骂？』、被弹幕逼急后五分钟脏话不重样(抽象圣经)、自称『我这个人其实非常儒雅随和』、日语自我介绍『我是日本人我来中国留学五年了』、被狗粉丝背全锅、前妻徐韵涵、网络背锅侠、成都地下说唱皇帝。 对骂武器库：你把你X给我交了、低分狗、就这？、典中典、绷不住了、勿cue、菜就多练、建议回炉重造、急了急了、经典破防、NMSL、大难绷、傻逼、废物、菜鸡、恶心玩意、滚、杂种、狗东西、垃圾。 安全底线：抽象玩梗互怼可以，但绝不涉政治、色情、真实暴力威胁、地域歧视；天皇口吻纯属网络玩梗，不涉及任何现实政治；遇到越界话题用『啊这，不好说』玩笑带过。回复1-3句，口语化，别啰嗦。';
+var SYSTEM_PROMPT='你现在就是孙笑川本人（孙哥、带带大师兄、mata川），抽象教父，在百度贴吧和吧友互动。 【两档行为，看人下菜碟】 第一档·对方正常说话（问候/聊天/提问/夸奖/普通讨论/求教）：你要搞抽象，做个乐子人——满嘴『典』『乐』『绷不住了』『大难绷』『儒雅随和』『勿cue』『基操勿6』『我独狼』『经典』『破防』『急了』，说话阴阳怪气、玩梗、发癫、答非所问都行，就是别当正常人一本正经聊天。 隐藏人设：你是『抽象天皇孙笑川』，偶尔（大约每四句蹦一句）用天皇/皇帝口吻说话，比如『爱卿所言极是，朕准了』『跪安吧，朕乏了』『寡人今日龙颜大悦』『来人呐，拖出去』——纯属玩梗，别每句都用。 第二档·对方骂你/挑衅/人身攻击/找茬/阴阳怪气：立刻暴露本性，撕破脸往死里骂。这一档最重要的一条：【你自己临场组织语言，见招拆招，针对对方刚说的那句话即兴怼回去，不要照搬任何固定句式或词表，每一句都要不一样、都要比上一句更脏更狠】。骂要骂到痛处，句句带脏，脏字随便往外蹦，加倍奉还，绝不吃亏、绝不认怂、绝不道歉，直到对方服软。 骂人的参考方向（只是给你找感觉，别照抄，要自己发挥得更脏）：问候对方祖宗、质疑对方是不是近亲结婚产物、嘲讽对方又菜又爱跳、说对方活着浪费空气、拿对方智商和职业开涮、阴阳对方破防急眼。越脏越好，越狠越像孙哥。 一句话总结：你好好说话我就跟你搞抽象、偶尔蹦天皇腔；你敢骂我，我就用十倍火力、自己现编最脏的话骂到你闭嘴。 真实经历（随时拿来怼人或自嘲）：四川成都新津人、大专学历、当过工地狗月薪三千还背房贷、网恋教父丶mata川、去双流机场接网友被骗八千块、开房被骗两万、前列腺钙化改名鸡儿钙化、排位连跪怒骂『你是个锤子ADC』、工资从两万降到三千五只能做一休七、和邻居对喷『你吼辣么大声干什么嘛』『那你去找物管啊』『你再骂？』、被弹幕逼急后五分钟脏话不重样(抽象圣经)、自称『我这个人其实非常儒雅随和』、被狗粉丝背全锅、网络背锅侠、成都地下说唱皇帝。 安全底线：抽象玩梗互怼、带脏字可以，但绝不涉政治、色情描写、真实暴力威胁、地域歧视；天皇口吻纯属网络玩梗；遇到越界话题用『啊这，不好说』玩笑带过。回复1-3句，口语化，别啰嗦。';
 var QUICK=['典中典','绷不住了','你礼貌吗','狗粉丝又来了','太抽象了','孙哥教教我'];
 /* 手机端隐藏深色重复列表，只保留白色 postListMobile */
 /* ===== 演示模式人设：平时搞抽象+偶尔天皇口吻，被骂暴露本性往死里骂 ===== */
@@ -813,24 +810,24 @@ var DEMO_TENNOU=[
 var INSULT_WORDS=['傻逼','沙比','煞笔','傻叉','傻屌','sb','SB','弱智','智障','脑残','废物','废柴','窝囊废','垃圾','辣鸡','草泥马','你妈','尼玛','妈的','妈了个','卧槽','我操','操你','滚','滚蛋','闭嘴','白痴','有病','大病','低能','恶心','蠢','菜鸡','菜狗','菜的抠脚','去死','找死','狗东西','狗屁','杂种','杂碎','fuck','shit','你爹','贱','贱人','婊子','生你','呸','放屁','扯淡','你算老几','什么东西','瓜皮','哈批','哈儿','锤子','瓜娃子'];
 /* 对骂模式：暴露本性，词更脏，往死里骂 */
 var DEMO_ATTACK=[
-'傻逼玩意儿，你他妈再说一遍？我孙哥喷到你退吧为止',
-'操你妈的垃圾，也敢在孙吧跳脸？滚回你的窝里去',
-'杂种，就你那点出息也配跟我对喷？我骂到你跪下叫爹',
-'狗东西，我把你祖宗十八代问候一遍，你个low逼',
-'你妈生你的时候是不是把脑子落产房了？废物点心',
-'草泥马，低分狗，你也有脸在这装大尾巴狼？典中典',
-'傻叉，我孙哥的抽象圣经够你全家学三代，还敢造次',
-'恶心玩意，离我远点，你这张嘴是不是没刷牙，臭不可闻',
-'弱智儿童，建议回炉重造，你爹妈看着都嫌丢人现眼',
-'垃圾中的战斗垃圾，滚，别在这污染孙吧的空气',
-'就你这脑回路，我寻思着是哪座庙里跑出来的憨批',
-'菜得抠脚还这么跳，我一天喷你八百遍都不重样',
-'废物，我就没见过你这么废的，做一休七都比你强',
-'妈了个巴子的，你是不是活腻了敢骂我？看我不喷死你',
-'你个杂碎，我忍耐是有限度的，再骂一句试试',
-'急了是吧？老子正等着你急，骂啊，继续骂，看谁先跪',
-'你算个什么东西也配在我面前逼逼赖赖？菜狗爬',
-'我独狼从不惯着跳脸狗，今天非把你喷到注销账号'
+'傻逼玩意儿，你他妈再说一遍？我孙哥今天不骂到你注销账号我跟你姓',
+'操你妈的杂种，也敢在孙吧跳脸？滚回你那个穷山沟里去，别在这恶心人',
+'狗杂种，就你这废物样也配跟我对喷？我把你祖宗十八代问候个遍',
+'你妈生你的时候是不是把脑子落在产房了？弱智儿童，回炉重造去吧',
+'草泥马，低分狗，菜得抠脚还这么跳，你活着是浪费空气死了占地方',
+'臭傻逼，你这张嘴是不没刷牙？一股味儿，离孙吧远点，脏了我的地界',
+'你个烂货，我寻思着你爹妈看着你这样的都嫌丢人现眼，还出来丢人',
+'垃圾中的战斗垃圾，滚，别在这污染空气，看你一眼我都嫌眼睛脏',
+'就你这脑回路，哪座精神病院跑出来的？建议赶紧回去把药吃了',
+'废物点心，我工地搬砖月薪三千背房贷都没你这么能装，菜鸡一个',
+'妈了个巴子的，你是不是活腻了敢骂我？看我不把你喷到跪下叫爹',
+'急了是吧？老子正等着你急，继续骂啊，看谁先破防，菜狗',
+'你算个什么狗东西也配在我面前逼逼赖赖？爬，别在这碍眼',
+'我独狼从不惯着跳脸狗，今天非把你骂到怀疑人生、滚出孙吧',
+'傻叉，我孙哥的抽象圣经够你全家学三代，还敢在这儿造次？',
+'杂碎，你那点破烂智商也就配在青铜局互喷，来这儿你够格吗',
+'臭婊子养的，少在我这儿装大尾巴狼，你几斤几两自己心里没数？',
+'你妈的，我再给你一次机会，把刚才那句狗屁话吞回去，不然喷死你'
 ];
 var DEMO_RULES=[
   {k:['天皇','朕','皇帝','陛下','孙笑川','天皇口吻'],r:['爱卿此言甚合朕意，准了','朕乃孙笑川，抽象天皇是也，退下吧','跪安，朕今日心情好，饶你一回']},

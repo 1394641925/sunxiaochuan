@@ -630,7 +630,7 @@ var POSTS={
     {a:'鼠鼠',lv:12,t:'讲讲压抑鼠鼠多年来的恋爱和得吃经历',e:'暗恋对象的故事，说完自己都绷不住了',url:'https://tieba.baidu.com/p/11205282625',rep:453,like:3600,time:'12天前',tags:[[["精华", "essence"]], [["神贴", ""]]]}
   ],
   remen:[
-    {a:'吧友',lv:8,t:'孙吧上怎么有这种没脑子的人（指不尊重逝者的这些人）',e:'孙吧上怎么有这种没脑子的人',url:'https://tieba.baidu.com/p/11209609846',rep:181,like:1200,time:'8分钟前',tags:[[["热", "hot"]], [["讨论", ""]]]},
+    {a:'吧友',lv:8,t:'孙吧上怎么有这种没脑子的人（指不尊重逝者的这些人）',e:'拿逝者玩梗，逝者为大，进去声讨',url:'https://tieba.baidu.com/p/11209609846',rep:181,like:1200,time:'8分钟前',tags:[[["热", "hot"]], [["讨论", ""]]]},
     {a:'《麦穗与羊》',lv:9,t:'《麦穗与羊》争议最大处',e:'吧友吵得不可开交，评论区大型现场',url:'https://tieba.baidu.com/p/11207797001',rep:1404,like:2300,time:'22分钟前',tags:[[["热", "hot"]], [["讨论", ""]]]},
     {a:'宋穗',lv:7,t:'澄清一下。我不是宋穗！！！不要在传！！',e:'本尊亲自下场辟谣，然并卵越传越欢',url:'https://tieba.baidu.com/p/11207505282',rep:500,like:890,time:'40分钟前',tags:[[["热", "hot"]], [["讨论", ""]]]},
     {a:'岁月史书',lv:8,t:'还敢岁月史书，我不介意和你爆了。',e:'还敢岁月史书，我不介意和你爆了',url:'https://tieba.baidu.com/p/11209499449',rep:34,like:760,time:'1小时前',tags:[[["热", "hot"]], [["讨论", ""]]]},
@@ -675,13 +675,13 @@ function anonAvatar(name){
   return '<span style="display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:50%;background:'+c[0]+';color:'+c[1]+';font-size:15px;font-weight:800">'+esc(n.charAt(0))+'</span>';
 }
 
-function buildPostEl(p,idx){
+function buildPostEl(p,idx,mobile){
   p._cat=curTab;
   var div=document.createElement('div'); div.className='post-item';
   var first=p.a.charAt(0);
   var thumb=p.video?'<div class="post-video-thumb">'+p.video+'</div>':'';
-  // 手机端热门第一条配真实截图，增强仿真
-  var img=(idx===0&&curTab==='remen')?'<img class="post-img" src="'+POST_IMG+'" alt="帖子配图">':'';
+  // 仅手机端热门第一条配截图（手机截图在桌面端放大后违和）
+  var img=(mobile&&idx===0&&curTab==='remen')?'<img class="post-img" src="'+POST_IMG+'" alt="帖子配图">':'';
   div.innerHTML='<div class="post-top"><div class="post-avatar">'+anonAvatar(p.a)+'</div>'+'<div class="post-author">'+esc(p.a)+'</div><span class="post-level">LV'+p.lv+'</span><span class="post-time">'+p.time+'</span></div>'+
     '<div class="post-title">'+esc(p.t)+'</div><div class="post-excerpt">'+esc(p.e)+'</div>'+img+thumb+
     '<div class="post-foot"><span>💬 '+p.rep+' 回复</span><span>👍 '+p.like+'</span><span>官方推荐</span></div>';
@@ -692,7 +692,8 @@ function renderPosts(){
   ['postList','postListMobile'].forEach(function(id){
     var box=document.getElementById(id); if(!box)return;
     box.innerHTML='';
-    POSTS[curTab].forEach(function(p,i){ box.appendChild(buildPostEl(p,i)); });
+    var mobile=(id==='postListMobile');
+    POSTS[curTab].forEach(function(p,i){ box.appendChild(buildPostEl(p,i,mobile)); });
   });
 }
 function refreshPosts(){renderPosts();toast('已刷新，都是最新的');}

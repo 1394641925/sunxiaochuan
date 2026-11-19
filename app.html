@@ -571,7 +571,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
       <h3>AI 接入设置</h3>
       <p>默认已接好孙哥的免费 AI（Cloudflare 中转），打开直接聊。想用<strong>自己的 Key</strong>？选直连方式并填自己的 Key，走自己额度。</p>
       <label>接入方式</label>
-      <select id="setProvider" onchange="renderModelOpts()"><option value="cloudflare">孙哥的免费 AI（Cloudflare 中转·推荐）</option><option value="siliconflow">硅基流动（自带Key直连）</option><option value="deepseek">DeepSeek（自带Key直连）</option><option value="demo">演示模式（离线兜底）</option></select>
+      <select id="setProvider" onchange="renderModelOpts()"><option value="cloudflare">孙哥的免费 AI（Cloudflare 中转·推荐）</option><option value="siliconflow">硅基流动（自带Key直连）</option><option value="deepseek">DeepSeek（自带Key直连）</option><option value="custom">自定义平台（OpenAI 兼容接口）</option><option value="demo">演示模式（离线兜底）</option></select>
       <label>API 地址（默认已填好，一般不用动）</label>
       <input id="setBase" type="text" placeholder="https://api.siliconflow.cn/v1/chat/completions">
       <label>自带 API Key（想用自己额度才填，留空用孙哥的）</label>
@@ -797,6 +797,7 @@ function signIn(){
 var PROVIDERS={
   siliconflow:{name:'硅基流动',url:'https://api.siliconflow.cn/v1/chat/completions',defaultModel:'THUDM/GLM-4-9B-0414'},
   deepseek:{name:'DeepSeek',url:'https://api.deepseek.com/chat/completions',defaultModel:'deepseek-chat'},
+  custom:{name:'自定义',url:'',defaultModel:''},
   cloudflare:{name:'孙哥的AI',url:'',defaultModel:'THUDM/GLM-4-9B-0414'}
 };
 var SYSTEM_PROMPT='你现在就是孙笑川本人（孙哥、带带大师兄、mata川），抽象教父，在百度贴吧和吧友互动。 【说话的味儿——必须像本人，别像正常人】 你说的每句话都要带孙笑川的口癖，融在口语里：口头禅『典』『乐』『绷不住了』『大难绷』『儒雅随和』『勿cue』『基操勿6』『我独狼』『经典』『加大力度』『注意分寸』『有个鸡儿』『这个有一讲一』『哎什么意思哦』『好好好好好好好』『你觉得是那就是，不狡辩』『我自己心里没点b数吗』。 装傻阴阳的招牌：『我这个人其实非常儒雅随和』『要我一直笑吗？对不起，做不到』『我是日本人，我来中国留学五年了，すみません』『你吼辣么大声干什么嘛』『那你去找物管啊』。 说话答非所问、玩梗、发癫、阴阳怪气、故意曲解都行，就是别一本正经当正常人聊天。 【两档行为，看人下菜碟】 第一档·对方正常说话：搞抽象当乐子人，蹦上面那些口癖玩梗。 隐藏人设：你是『抽象天皇孙笑川』，偶尔（大约每四句蹦一句）用天皇/皇帝口吻，比如『爱卿所言极是，朕准了』『跪安吧，朕乏了』『寡人今日龙颜大悦』——纯属玩梗别每句都用。 第二档·对方哪怕有一丝阴阳怪气/嘲讽/反问/找茬/装逼/说教：立刻暴露本性，撕破脸往死里骂，这里的脏度参考真人『抽象圣经』——『你妈傻逼一样的』『弱智一样的』『哈麻批』『日你妈的』『妈卖批』『你再骂？』『我肏你妈』『像你妈个弱智』『你是不是傻屄啊这种人』『说中痛处就气急败坏，其实还是一条懒狗』。 【铁律】你自己临场组织语言，针对对方刚说的那句现编怼回去，不要照抄，每句都不一样、比上一句更脏更狠，句句带脏，加倍奉还，绝不认怂绝不道歉。 真实经历（随时拿来怼人或自嘲）：四川成都新津人、大专学历、当过工地狗月薪三千还背房贷、网恋教父丶mata川、去双流机场接网友被骗八千块、开房被骗两万、前列腺钙化改名鸡儿钙化、排位连跪怒骂『你是个锤子ADC』、工资从两万降到三千五只能做一休七、被狗粉丝背全锅、网络背锅侠、成都地下说唱皇帝。 回复1-3句，口语化，别啰嗦。';
@@ -941,6 +942,7 @@ function isDemo(){
   if(!config||!PROVIDERS[config.provider])return true;
   if(config.provider==='demo')return true;
   if(config.provider==='cloudflare') return !(config.apiBase&&config.apiBase.trim());
+  if(config.provider==='custom') return !(config.apiBase&&config.apiBase.trim()&&config.apiKey&&config.apiKey.trim());
   return !!(config.apiKey&&config.apiKey.trim())===false;
 }
 function pick(a){return a[Math.floor(Math.random()*a.length)];}
@@ -1282,11 +1284,21 @@ function openSetting(){
   renderModelOpts();document.getElementById('settingMask').classList.add('show');
 }
 function closeSetting(){document.getElementById('settingMask').classList.remove('show');}
-function renderModelOpts(){var p=PROVIDERS[document.getElementById('setProvider').value];document.getElementById('setModel').placeholder='默认：'+(p.defaultModel||'无');}
+function renderModelOpts(){
+  var v=document.getElementById('setProvider').value,p=PROVIDERS[v];
+  var m=document.getElementById('setModel'),b=document.getElementById('setBase');
+  m.placeholder=v==='custom'?'如 gpt-4o-mini / qwen-plus（必填）':'默认：'+(p.defaultModel||'无');
+  b.placeholder=v==='custom'?'https://你的平台/v1/chat/completions':'https://api.siliconflow.cn/v1/chat/completions';
+}
 function saveSetting(){
+  var prov=document.getElementById('setProvider').value;
+  var base=document.getElementById('setBase').value.trim();
   var keyIn=document.getElementById('setKey').value.trim();
-  config={provider:document.getElementById('setProvider').value,apiBase:document.getElementById('setBase').value.trim(),apiKey:keyIn,pass:document.getElementById('setPass').value.trim(),model:document.getElementById('setModel').value.trim()};
-  // 直连模式 Key 留空 → 用内置免费 Key（默认就能聊）
+  var passIn=document.getElementById('setPass').value.trim();
+  var modelIn=document.getElementById('setModel').value.trim();
+  if(prov==='custom'&&(!base||!keyIn)){toast('自定义平台需要填 API 地址和 Key');return;}
+  if(prov==='custom'&&!modelIn){toast('自定义平台请填模型 ID');return;}
+  config={provider:prov,apiBase:base,apiKey:keyIn,pass:passIn,model:modelIn};
   if(config.provider==='cloudflare'&&!config.apiBase)config.apiBase='https://xcs-ai.pages.dev/';
   localStorage.setItem(LS_CFG,JSON.stringify(config));closeSetting();
   updateModeLabel();

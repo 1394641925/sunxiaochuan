@@ -97,7 +97,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .navtab.mid .pub svg{width:24px;height:24px;stroke:#fff;stroke-width:2.4}
 .navtab.mid .pub-label{margin-top:1px;color:#4e6ef2;font-weight:700}
 /* 孙笑川可拖动悬浮球 */
-.fab{position:fixed;right:16px;bottom:96px;width:60px;height:60px;border-radius:50%;z-index:60;cursor:grab;touch-action:none;box-shadow:0 6px 20px rgba(0,0,0,.35);border:3px solid #fff;background-image:url('assets/gen/484dcf1ff261.png');background-size:cover;background-position:center;user-select:none}
+.fab{position:fixed;right:16px;bottom:96px;width:60px;height:60px;border-radius:50%;z-index:60;cursor:grab;touch-action:none;box-shadow:0 6px 20px rgba(0,0,0,.35);border:3px solid #fff;background-color:#ff8a5a;background-image:url('assets/gen/484dcf1ff261.png');background-size:cover;background-position:center;user-select:none}
 .fab:active{cursor:grabbing}
 .fab::after{content:'孙哥';position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;font-size:10px;padding:1px 7px;border-radius:8px;white-space:nowrap}
 .fab-ring{position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(255,213,74,.85);animation:fabPulse 2s infinite}
@@ -723,7 +723,18 @@ function navTab(el,name){
 (function(){
   var fab=document.getElementById('fab'); if(!fab)return;
   var LS_FAB='xcs_fab_pos';
-  try{var p=JSON.parse(localStorage.getItem(LS_FAB)||'null');if(p&&typeof p.x==='number'){fab.style.left=p.x+'px';fab.style.top=p.y+'px';fab.style.right='auto';fab.style.bottom='auto';}}catch(e){}
+  try{var p=JSON.parse(localStorage.getItem(LS_FAB)||'null');if(p&&typeof p.x==='number'){
+    var maxX=Math.max(8,window.innerWidth-68),maxY=Math.max(8,window.innerHeight-68);
+    var nx=Math.max(8,Math.min(maxX,p.x)),ny=Math.max(8,Math.min(maxY,p.y));
+    if(nx!==p.x||ny!==p.y){try{localStorage.setItem(LS_FAB,JSON.stringify({x:nx,y:ny}));}catch(e){}}
+    fab.style.left=nx+'px';fab.style.top=ny+'px';fab.style.right='auto';fab.style.bottom='auto';
+  }}catch(e){}
+  window.addEventListener('resize',function(){
+    if(!fab.style.left||fab.style.left==='auto')return;
+    var nx=Math.max(8,Math.min(window.innerWidth-68,parseFloat(fab.style.left)||0));
+    var ny=Math.max(8,Math.min(window.innerHeight-68,parseFloat(fab.style.top)||0));
+    fab.style.left=nx+'px';fab.style.top=ny+'px';
+  });
   var dragging=false,moved=false,sx=0,sy=0,ox=0,oy=0;
   function start(x,y){dragging=true;moved=false;sx=x;sy=y;var r=fab.getBoundingClientRect();ox=r.left;oy=r.top;fab.style.right='auto';fab.style.bottom='auto';fab.style.left=ox+'px';fab.style.top=oy+'px';}
   function move(x,y){if(!dragging)return;var dx=x-sx,dy=y-sy;if(Math.abs(dx)+Math.abs(dy)>5)moved=true;var nx=Math.max(0,Math.min(window.innerWidth-60,ox+dx)),ny=Math.max(0,Math.min(window.innerHeight-60,oy+dy));fab.style.left=nx+'px';fab.style.top=ny+'px';}

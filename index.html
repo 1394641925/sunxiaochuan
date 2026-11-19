@@ -817,19 +817,33 @@ var DEMO_RULES=[
   {k:['日本','留学','日语','哪国','哪人'],r:['我是日本人，我来中国留学五年了，すみません哈哈','成都新津人，正宗川渝小伙，勿cue','这个锅我不背，找物管去，开玩笑的']},
   {k:['吗','?','？','怎么','为什么','如何','什么'],r:['你问对人了，孙哥什么大风大浪没见过，典','这个嘛，我寻思着跟你说道说道','哈哈别急，慢慢聊，我这个人非常儒雅随和']}
 ];
+/* ===== 孙哥说话自动带下载好的表情包（按语境挑） ===== */
+var AI_EMO={
+  normal:['滑稽','haha','OK','呵呵','捂嘴笑','笑眼','太开心','大拇指','你懂的','挖鼻','懒得理','汗','黑线','what','惊讶','疑问','吃瓜','扶额','捂脸','茶杯','睡觉','狂汗','笑尿','吐舌','乖'],
+  tenno:['大拇指','酷','胜利','太阳','真棒','爱心','玫瑰','花心','礼物','阴险'],
+  attack:['喷','怒','鄙视','阴险','吐','便便','手纸','蜡烛','被打','吐血','狗头','黑线','what']
+};
+function withEmoji(text,kind){
+  text=String(text||'');
+  if(/\[[^\]]+\]/.test(text))return text; /* 已有标记就不重复加 */
+  var pool=AI_EMO[kind||'normal'];
+  if(!pool||!pool.length)return text;
+  if(Math.random()<0.15)return text; /* 少量不带，更自然 */
+  return text+' ['+pool[Math.floor(Math.random()*pool.length)]+']';
+}
 function isInsult(t){for(var i=0;i<INSULT_WORDS.length;i++){if(t.indexOf(INSULT_WORDS[i])>=0)return true;}return false;}
 function demoReply(t){
   t=String(t);
   /* 先判攻击：命中辱骂词 → 暴露本性，往死里骂 */
-  if(isInsult(t))return pick(DEMO_ATTACK);
+  if(isInsult(t))return withEmoji(pick(DEMO_ATTACK),'attack');
   /* 偶尔天皇口吻（纯玩梗，约1/5概率） */
-  if(Math.random()<0.2)return pick(DEMO_TENNOU);
+  if(Math.random()<0.2)return withEmoji(pick(DEMO_TENNOU),'tenno');
   /* 正常聊天：话题命中走对应抽象回复，否则走通用抽象池 */
   for(var i=0;i<DEMO_RULES.length;i++){
     var r=DEMO_RULES[i];
-    for(var j=0;j<r.k.length;j++){if(t.indexOf(r.k[j])>=0)return pick(r.r);}
+    for(var j=0;j<r.k.length;j++){if(t.indexOf(r.k[j])>=0)return withEmoji(pick(r.r),'normal');}
   }
-  return pick(DEMO_NORMAL);
+  return withEmoji(pick(DEMO_NORMAL),'normal');
 }
 function openImageGallery(){
   var pics=[['📷','孙哥直播名场面·抽象圣经'],['🖼️','吧友精选表情包合集'],['🎬','经典鬼畜封面大赏'],['😅','儒雅随和高清无码'],['🔥','贴吧十周年纪念图'],['🍺','真的🐮🍺名场面']];
@@ -1118,13 +1132,14 @@ function send(){
 }
 function typeOut(ce,text,done){
   var i=0;ce.textContent='';ce.classList.add('cursor');
-  var timer=setInterval(function(){i++;ce.textContent=text.slice(0,i);scrollBottom();if(i>=text.length){clearInterval(timer);ce.classList.remove('cursor');ce.innerHTML=renderText(text);done();}},40);
+  var timer=setInterval(function(){i++;ce.innerHTML=renderText(text.slice(0,i));scrollBottom();if(i>=text.length){clearInterval(timer);ce.classList.remove('cursor');done();}},40);
 }
 function callAI(ce,text){
   if(isDemo()){
     var r=demoReply(text);chatHistory.push({role:'assistant',content:r});
     setTimeout(function(){typeOut(ce,r,finish);},400);return;
   }
+  function emoKind(txt){if(isInsult(txt))return 'attack';if(/天皇|朕|皇帝|陛下|孙笑川是天皇/.test(txt))return 'tenno';return 'normal';}
   var p=PROVIDERS[config.provider],model=config.model||p.defaultModel;
   var url=(config.provider==='cloudflare')?(config.apiBase||''):p.url;
   var headers={'Content-Type':'application/json'};
@@ -1136,7 +1151,7 @@ function callAI(ce,text){
     .then(function(d){
       var r=(d.choices&&d.choices[0]&&d.choices[0].message&&d.choices[0].message.content);
       if(!r&&d.error) r='啊这，接口报错：'+(d.error.message||'未知');
-      chatHistory.push({role:'assistant',content:r||'啊这，孙哥卡壳了'});typeOut(ce,r||'啊这，孙哥卡壳了',finish);
+      r=withEmoji(r||'啊这，孙哥卡壳了',emoKind(text));chatHistory.push({role:'assistant',content:r});typeOut(ce,r,finish);
     })
     .catch(function(){ce.classList.remove('cursor');ce.innerHTML=renderText('网络开小差了，勿cue，检查地址对不对');finish();});
 }

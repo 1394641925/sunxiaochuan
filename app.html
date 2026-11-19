@@ -569,9 +569,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   <div class="modal-mask" id="settingMask">
     <div class="modal">
       <h3>AI 接入设置</h3>
-      <p>默认已接好孙哥的免费 AI，打开直接聊。想用<strong>自己的 Key</strong>？选直连并填自己的 Key，走自己额度。</p>
+      <p>默认已接好孙哥的免费 AI（Cloudflare 中转），打开直接聊。想用<strong>自己的 Key</strong>？选直连方式并填自己的 Key，走自己额度。</p>
       <label>接入方式</label>
-      <select id="setProvider" onchange="renderModelOpts()"><option value="siliconflow">孙哥的免费 AI（默认·直连硅基流动）</option><option value="cloudflare">Cloudflare 中转（隐藏Key）</option><option value="deepseek">DeepSeek（自带Key直连）</option><option value="demo">演示模式（离线兜底）</option></select>
+      <select id="setProvider" onchange="renderModelOpts()"><option value="cloudflare">孙哥的免费 AI（Cloudflare 中转·推荐）</option><option value="siliconflow">硅基流动（自带Key直连）</option><option value="deepseek">DeepSeek（自带Key直连）</option><option value="demo">演示模式（离线兜底）</option></select>
       <label>API 地址（默认已填好，一般不用动）</label>
       <input id="setBase" type="text" placeholder="https://api.siliconflow.cn/v1/chat/completions">
       <label>自带 API Key（想用自己额度才填，留空用孙哥的）</label>
@@ -753,7 +753,7 @@ var LS_CFG='xcs_cfg_v1', LS_LV='xcs_level_v2';
 var DEFAULT_CFG={provider:'cloudflare',apiBase:'https://xcs-ai.pages.dev/',apiKey:'',pass:'sunxiaochuan666',model:''};
 var config=loadCfg();
 var lvState=loadLv();
-function loadCfg(){ try{var r=localStorage.getItem(LS_CFG);if(r)return JSON.parse(r);}catch(e){} return JSON.parse(JSON.stringify(DEFAULT_CFG)); }
+function loadCfg(){ try{var r=localStorage.getItem(LS_CFG);if(r){var c=JSON.parse(r);if(c.provider==='siliconflow'&&!c.apiKey){c.provider='cloudflare';c.apiBase='https://xcs-ai.pages.dev/';}return c;}}catch(e){} return JSON.parse(JSON.stringify(DEFAULT_CFG)); }
 function loadLv(){ try{var r=localStorage.getItem(LS_LV);if(r)return JSON.parse(r);}catch(e){} return {exp:0,lastSign:''}; }
 function saveLv(){ localStorage.setItem(LS_LV,JSON.stringify(lvState)); }
 function renderLv(){

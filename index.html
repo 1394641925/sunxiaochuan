@@ -43,6 +43,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 /* 内容区 */
 .content{flex:1;overflow-y:auto;padding:0 14px 16px;position:relative;z-index:2;scrollbar-width:none}
 .content::-webkit-scrollbar{display:none}
+#postList{display:none}
 .card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:14px;margin-bottom:14px;overflow:hidden}
 .card-head{display:flex;align-items:center;justify-content:space-between;padding:13px 14px 8px}
 .card-head .title{font-size:15px;font-weight:800;color:#fff;display:flex;align-items:center;gap:6px}
@@ -65,7 +66,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .post-item{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:13px 14px;margin-bottom:10px;cursor:pointer;transition:background .15s}
 .post-item:active{background:rgba(255,255,255,.11)}
 .post-top{display:flex;align-items:center;gap:9px}
-.post-avatar{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,#5a6fd8,#7b5cfa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
+.post-avatar{width:34px;height:34px;border-radius:50%;flex-shrink:0;overflow:hidden;border:1px solid rgba(0,0,0,.06)}
 .post-author{font-size:13px;color:#c9d4ff;font-weight:600}
 .post-level{font-size:10px;color:#ffd54a;background:rgba(255,213,74,.12);padding:1px 5px;border-radius:8px;margin-left:2px}
 .post-time{font-size:11px;color:rgba(255,255,255,.4);margin-left:auto}
@@ -86,7 +87,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .cat{flex-shrink:0;font-size:14px;padding:6px 20px;color:rgba(255,255,255,.7);cursor:pointer;white-space:nowrap;position:relative;font-weight:500;background:rgba(255,255,255,.1);border-radius:15px;margin-right:10px}
 .cat.active{background:#4e8bff;color:#fff;font-weight:700}
 /* 底部导航(手机·贴吧原生五格) */
-.tabbar{background:#fff;display:flex;padding:8px 4px 4px;box-shadow:0 -4px 18px rgba(0,0,0,.12);position:relative;z-index:10;flex-shrink:0;align-items:flex-end}
+.tabbar{flex-shrink:0;background:#fff;display:flex;padding:8px 4px 4px;box-shadow:0 -4px 18px rgba(0,0,0,.12);position:relative;z-index:10;flex-shrink:0;align-items:flex-end}
 .navtab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:#9aa0ad;font-size:10px;cursor:pointer;position:relative;padding:2px 0}
 .navtab svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .navtab.active{color:#4e6ef2;font-weight:700}
@@ -213,7 +214,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .lvtable td:nth-child(2){font-weight:600}
 /* ============ 按截图重做的手机端仿真样式 ============ */
 /* 聊天频道卡片（首页正中） */
-.mobile-chat-card{margin:10px 14px 0;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:13px 14px 4px;position:relative;z-index:4;backdrop-filter:blur(6px)}
+.mobile-chat-card{margin:10px 0 0;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:13px 14px 4px;position:relative;z-index:4;backdrop-filter:blur(6px)}
 .mcc-head{display:flex;align-items:center;gap:7px;margin-bottom:2px}
 .mcc-head .mcc-title{font-size:15px;font-weight:800;color:#fff;display:flex;align-items:center;gap:6px}
 .mcc-head .mcc-online{font-size:11px;color:rgba(255,255,255,.6);font-weight:400}
@@ -248,8 +249,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .cat.active::after{content:'';position:absolute;left:50%;transform:translateX(-50%);bottom:4px;width:20px;height:3px;background:#4e6ef2;border-radius:2px}
 /* 白底帖子卡（包在 white-sheet 内） */
 .white-sheet .section-title{color:#333;padding:12px 14px 6px}
+.hot-cats{display:flex;gap:8px;flex-wrap:wrap;padding:8px 14px 2px}
+.hot-cats span{font-size:12px;color:#4e6ef2;background:#eef3ff;padding:5px 11px;border-radius:14px;cursor:pointer}
+.hot-topic{margin:10px 12px}
+
 .white-sheet .post-item{background:#fff;border:1px solid #f0f1f5;border-radius:12px;padding:13px 14px;margin:0 12px 10px}
-.white-sheet .post-avatar{background:linear-gradient(135deg,#ff8fb1,#c76bff)}
+.white-sheet .post-avatar{border:1px solid #eee}
 .white-sheet .post-author{color:#333}
 .white-sheet .post-level{background:#eef1ff;color:#4e6ef2}
 .white-sheet .post-time{color:#b4b8c2}
@@ -266,7 +271,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .side-fab.plus{background:#2b8cf5;border:none}
 .side-fab.plus svg{stroke:#fff;stroke-width:2.6}
 /* 悬浮球在截图版式里上移，避免挡住右侧按钮和帖子时间 */
-.fab{bottom:330px;width:52px;height:52px}
+.fab{bottom:322px;width:50px;height:50px;right:12px}
 /* ============ 电脑端 PC 版 ============ */
 @media (min-width:820px){
   body{background:#f5f6fa;display:block}
@@ -318,6 +323,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
   .pc-stat b{display:block;font-size:18px;color:#4e6ef2}
   .pc-sign{margin-top:14px;background:#4e6ef2;color:#fff;border:none;border-radius:20px;padding:9px 30px;font-weight:700;cursor:pointer}
   .mobile-only,.cat-row{display:none}
+  #postList{display:block}
   .pc-left,.pc-right{display:block}
   .pc-tabs{display:flex}
   .chatroom{position:fixed}
@@ -367,11 +373,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     <div class="tag-pill" onclick="openBoard('升级吧友','https://tieba.baidu.com/p/11086512517')">升级吧友</div>
     <div class="tag-pill" onclick="openBoard('亚文化','https://tieba.baidu.com/p/9987911460')">亚文化</div>
     <div class="tag-pill" onclick="openBoard('孙笑川','https://tieba.baidu.com/p/11209406831')">孙笑川</div>
-    <div class="tag-pill" onclick="openBoard('神人','https://tieba.baidu.com/p/11209387131')">🔍 神人</div>
-    <div class="tag-pill" onclick="openBoard('鼠鼠','https://tieba.baidu.com/p/11205282625')">🔍 鼠鼠</div>
-    <div class="tag-pill" onclick="openBoard('乞讨','https://tieba.baidu.com/p/11209977506')">🔍 乞讨</div>
   </div>
 
+
+
+  <div class="content">
   <!-- 聊天频道卡片（首页正中，按截图） -->
   <div class="mobile-chat-card mobile-only">
     <div class="mcc-head">
@@ -379,24 +385,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
       <div class="mcc-at">有人@我 ›</div>
     </div>
     <div class="mcc-row" onclick="openChat('孙笑川吧蓝牌群')">
-      <div class="mcc-ico">dt</div>
+      <div class="mcc-ico" style="background:#4e6ef2">群</div>
       <div class="mcc-body"><div class="mcc-name">孙笑川吧蓝牌群(蓝牌进)</div><div class="mcc-desc"><span class="at">[有人@我]</span> 幽蝶子i：理性讨论骨架是不是阴间</div></div>
       <div class="mcc-right"><span class="b">99+</span><div class="t">刚刚</div></div>
     </div>
     <div class="mcc-row" onclick="openChat('签到群')">
-      <div class="mcc-ico">dt</div>
+      <div class="mcc-ico" style="background:#f5a623">签</div>
       <div class="mcc-body"><div class="mcc-name">签到群</div><div class="mcc-desc">纯蓝的王：[图片]</div></div>
-      <div class="mcc-right"><span class="b">99+</span><div class="t">刚刚</div></div>
+      <div class="mcc-right"><span class="b">12</span><div class="t">刚刚</div></div>
     </div>
     <div class="mcc-row" onclick="openChat('孙笑川吧黄牌群')">
-      <div class="mcc-ico">dt</div>
+      <div class="mcc-ico" style="background:#34a853">群</div>
       <div class="mcc-body"><div class="mcc-name">孙笑川吧黄牌群</div><div class="mcc-desc">背而布予：[表情]</div></div>
-      <div class="mcc-right"><span class="b">99+</span><div class="t">刚刚</div></div>
+      <div class="mcc-right"><span class="b">3</span><div class="t">刚刚</div></div>
     </div>
   </div>
   <div class="more-boards mobile-only">更多版块 ›</div>
-
-  <div class="content">
     <!-- 左侧栏(PC) -->
     <div class="pc-left">
       <div class="pc-side-title">本吧信息</div>
@@ -428,6 +432,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
           <div class="cat" onclick="switchTab('zuixin',this)">最新</div>
           <div class="cat" onclick="switchTab('shipin',this)">视频</div>
         </div>
+        <div class="hot-cats">
+          <span onclick="openBoard('神人','https://tieba.baidu.com/p/11209387131')">#神人</span>
+          <span onclick="openBoard('鼠鼠','https://tieba.baidu.com/p/11205282625')">#鼠鼠</span>
+          <span onclick="openBoard('乞讨','https://tieba.baidu.com/p/11209977506')">#乞讨</span>
+          <span onclick="openBoard('网恋教父','https://tieba.baidu.com/p/11209406831')">#网恋教父</span>
+        </div>
         <!-- Hot 话题卡 -->
         <div class="hot-topic" id="hotTopic">
           <div class="ht-head">
@@ -438,7 +448,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
             </div>
             <div class="ht-go" onclick="openBoard('麦穗与羊话题','https://tieba.baidu.com/p/11207797001')">去看看</div>
           </div>
-          <div class="ht-row">:《麦穗与羊》争议最大处　👍1404　<span class="avatar-mini"></span> 樱桃小枫枫：活了22年没笑</div>
+          <div class="ht-row">:《麦穗与羊》争议最大处　👍1404　<span class="avatar-mini" style="background:#e8f0fe;color:#4285f4;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;font-size:10px;font-weight:800;vertical-align:middle">樱</span> 樱桃小枫枫：活了22年没笑</div>
         </div>
         <div class="section-title" style="padding:2px 14px 8px">吧内帖子</div>
         <div class="post-list" id="postListMobile"></div>
@@ -608,43 +618,58 @@ var POSTS={
     {a:'白月光',lv:13,t:'我永远失去了我的白月光',e:'吧友多年后重提，评论区全是故事',url:'https://tieba.baidu.com/p/10062253540',rep:15383,like:8800,time:'3小时前',tags:[[["精华", "essence"]], [["神贴", ""]]]},
     {a:'8u讲讲',lv:12,t:'来给8u讲讲我在杭州某大厂实习期间和同事发生的一些故事吧',e:'来自杭州某大厂实习期间的真实经历',url:'https://tieba.baidu.com/p/11202128238',rep:3601,like:6100,time:'昨天',tags:[[["精华", "essence"]], [["神贴", ""]]]},
     {a:'爱情故事',lv:12,t:'之前一直看有人讲自己的爱情故事，今天我也来讲讲吧',e:'之前一直看别人讲，今天自己也来讲讲',url:'https://tieba.baidu.com/p/11208922913',rep:300,like:3900,time:'2天前',tags:[[["精华", "essence"]], [["神贴", ""]]]},
-    {a:'孙吧常客',lv:9,t:'孙吧还有00后吗？',e:'孙吧还有00后吗？引出一大波考古',url:'https://tieba.baidu.com/p/11209975055',rep:6,like:1200,time:'4天前',tags:[[["精华", "essence"]], [["神贴", ""]]]},
-    {a:'九江',lv:11,t:'九江很远，我很想你',e:'九江很远，我很想你——吧友共鸣贴',url:'https://tieba.baidu.com/p/11194687169',rep:900,like:2800,time:'5天前',tags:[[["精华", "essence"]], [["神贴", ""]]]},
-    {a:'暧昧期',lv:10,t:'暧昧酝酿期好烦人啊',e:'暧昧酝酿期好烦人啊，吧友支招',url:'https://tieba.baidu.com/p/11184159220',rep:66,like:1800,time:'6天前',tags:[[["精华", "essence"]], [["神贴", ""]]]},
-    {a:'网络小说',lv:11,t:'我发网络小说，你们来打分！',e:'我发网络小说，你们来打分！',url:'https://tieba.baidu.com/p/9987911460',rep:10288,like:4300,time:'7天前',tags:[[["精华", "essence"]], [["神贴", ""]]]},
-    {a:'鼠鼠',lv:12,t:'讲讲压抑鼠鼠多年来的恋爱和得吃经历',e:'讲讲压抑鼠鼠多年来的恋爱和得吃经历',url:'https://tieba.baidu.com/p/11205282625',rep:453,like:3600,time:'12天前',tags:[[["精华", "essence"]], [["神贴", ""]]]}
+    {a:'孙吧常客',lv:9,t:'孙吧还有00后吗？',e:'感觉吧里都是老哥，还有年轻人吗',url:'https://tieba.baidu.com/p/11209975055',rep:6,like:1200,time:'4天前',tags:[[["精华", "essence"]], [["神贴", ""]]]},
+    {a:'九江',lv:11,t:'九江很远，我很想你',e:'写给某个回不去的人，吧友轻喷',url:'https://tieba.baidu.com/p/11194687169',rep:900,like:2800,time:'5天前',tags:[[["精华", "essence"]], [["神贴", ""]]]},
+    {a:'暧昧期',lv:10,t:'暧昧酝酿期好烦人啊',e:'这种不上不下的感觉太熬人了',url:'https://tieba.baidu.com/p/11184159220',rep:66,like:1800,time:'6天前',tags:[[["精华", "essence"]], [["神贴", ""]]]},
+    {a:'网络小说',lv:11,t:'我发网络小说，你们来打分！',e:'手打了三万字，吧友轻喷，打分标准随缘',url:'https://tieba.baidu.com/p/9987911460',rep:10288,like:4300,time:'7天前',tags:[[["精华", "essence"]], [["神贴", ""]]]},
+    {a:'鼠鼠',lv:12,t:'讲讲压抑鼠鼠多年来的恋爱和得吃经历',e:'暗恋对象的故事，说完自己都绷不住了',url:'https://tieba.baidu.com/p/11205282625',rep:453,like:3600,time:'12天前',tags:[[["精华", "essence"]], [["神贴", ""]]]}
   ],
   remen:[
     {a:'吧友',lv:8,t:'孙吧上怎么有这种没脑子的人（指不尊重逝者的这些人）',e:'孙吧上怎么有这种没脑子的人',url:'https://tieba.baidu.com/p/11209609846',rep:181,like:1200,time:'8分钟前',tags:[[["热", "hot"]], [["讨论", ""]]]},
-    {a:'《麦穗与羊》',lv:9,t:'《麦穗与羊》争议最大处',e:'争议最大处，8u吵翻了',url:'https://tieba.baidu.com/p/11207797001',rep:1404,like:2300,time:'22分钟前',tags:[[["热", "hot"]], [["讨论", ""]]]},
-    {a:'宋穗',lv:7,t:'澄清一下。我不是宋穗！！！不要在传！！',e:'澄清一下，我不是宋穗，别再传了',url:'https://tieba.baidu.com/p/11207505282',rep:500,like:890,time:'40分钟前',tags:[[["热", "hot"]], [["讨论", ""]]]},
+    {a:'《麦穗与羊》',lv:9,t:'《麦穗与羊》争议最大处',e:'吧友吵得不可开交，评论区大型现场',url:'https://tieba.baidu.com/p/11207797001',rep:1404,like:2300,time:'22分钟前',tags:[[["热", "hot"]], [["讨论", ""]]]},
+    {a:'宋穗',lv:7,t:'澄清一下。我不是宋穗！！！不要在传！！',e:'本尊亲自下场辟谣，然并卵越传越欢',url:'https://tieba.baidu.com/p/11207505282',rep:500,like:890,time:'40分钟前',tags:[[["热", "hot"]], [["讨论", ""]]]},
     {a:'岁月史书',lv:8,t:'还敢岁月史书，我不介意和你爆了。',e:'还敢岁月史书，我不介意和你爆了',url:'https://tieba.baidu.com/p/11209499449',rep:34,like:760,time:'1小时前',tags:[[["热", "hot"]], [["讨论", ""]]]},
     {a:'纯挂人',lv:7,t:'纯挂人，依旧逆天高中同学兼室友',e:'依旧逆天高中同学兼室友',url:'https://tieba.baidu.com/p/11209387131',rep:383,like:530,time:'1小时前',tags:[[["热", "hot"]], [["讨论", ""]]]},
-    {a:'绷不住',lv:9,t:'谁能绷住😂',e:'谁能绷住😂',url:'https://tieba.baidu.com/p/11201054730',rep:406,like:780,time:'2小时前',tags:[[["热", "hot"]], [["讨论", ""]]]},
-    {a:'dy人',lv:6,t:'dy的人都魔了吧',e:'dy的人都魔了吧',url:'https://tieba.baidu.com/p/11208171162',rep:252,like:660,time:'3小时前',tags:[[["热", "hot"]], [["讨论", ""]]]},
+    {a:'绷不住',lv:9,t:'谁能绷住😂',e:'这图我看了十分钟，越看越抽象',url:'https://tieba.baidu.com/p/11201054730',rep:406,like:780,time:'2小时前',tags:[[["热", "hot"]], [["讨论", ""]]]},
+    {a:'dy人',lv:6,t:'dy的人都魔了吧',e:'刷了两条就绷不住了，现在整个人是懵的',url:'https://tieba.baidu.com/p/11208171162',rep:252,like:660,time:'3小时前',tags:[[["热", "hot"]], [["讨论", ""]]]},
     {a:'不要得寸进尺',lv:7,t:'不要得寸进尺！',e:'勿cue，就事论事',url:'https://tieba.baidu.com/p/11209318636',rep:88,like:410,time:'5小时前',tags:[[["热", "hot"]], [["讨论", ""]]]}
   ],
   zuixin:[
-    {a:'吧务',lv:3,t:'不要再骂杨哥了',e:'不要再骂杨哥了',url:'https://tieba.baidu.com/p/11209977052',rep:1,like:3,time:'刚刚',tags:[[["新人", ""]]]},
-    {a:'羊',lv:2,t:'那个什么羊的',e:'那个什么羊的',url:'https://tieba.baidu.com/p/11209936803',rep:4,like:6,time:'1分钟前',tags:[[["新人", ""]]]},
-    {a:'吧友',lv:4,t:'别再删我贴子了喵',e:'别再删我贴子了喵',url:'https://tieba.baidu.com/p/11209935942',rep:14,like:11,time:'3分钟前',tags:[[["新人", ""]]]},
-    {a:'《麦穗与羊》',lv:3,t:'关于《麦穗与羊》暑假篇，发表一下意见。',e:'关于暑假篇，发表一下意见',url:'https://tieba.baidu.com/p/11209926343',rep:4,like:9,time:'5分钟前',tags:[[["新人", ""]]]},
-    {a:'签到群',lv:5,t:'牛魔的，给签到群也搞没了',e:'牛魔的，给签到群也搞没了',url:'https://tieba.baidu.com/p/11209966922',rep:7,like:16,time:'8分钟前',tags:[[["新人", ""]]]},
+    {a:'吧务',lv:3,t:'不要再骂杨哥了',e:'吧务出面劝架，场面一度非常热闹',url:'https://tieba.baidu.com/p/11209977052',rep:1,like:3,time:'刚刚',tags:[[["新人", ""]]]},
+    {a:'羊',lv:2,t:'那个什么羊的',e:'吧友口中的"羊"到底指啥，进来考古',url:'https://tieba.baidu.com/p/11209936803',rep:4,like:6,time:'1分钟前',tags:[[["新人", ""]]]},
+    {a:'吧友',lv:4,t:'别再删我贴子了喵',e:'第三次被删了，吧务给个理由行吗',url:'https://tieba.baidu.com/p/11209935942',rep:14,like:11,time:'3分钟前',tags:[[["新人", ""]]]},
+    {a:'《麦穗与羊》',lv:3,t:'关于《麦穗与羊》暑假篇，发表一下意见。',e:'暑假篇剧情走向引发吧友激烈讨论',url:'https://tieba.baidu.com/p/11209926343',rep:4,like:9,time:'5分钟前',tags:[[["新人", ""]]]},
+    {a:'签到群',lv:5,t:'牛魔的，给签到群也搞没了',e:'工具有啥用啊，说没就没了',url:'https://tieba.baidu.com/p/11209966922',rep:7,like:16,time:'8分钟前',tags:[[["新人", ""]]]},
     {a:'水楼',lv:6,t:'这是一个水楼',e:'这是一个水楼，纯粹水经验',url:'https://tieba.baidu.com/p/11086512517',rep:37997,like:88,time:'10分钟前',tags:[[["新人", ""]]]},
-    {a:'舍友',lv:4,t:'孙笑川舍友',e:'孙笑川舍友',url:'https://tieba.baidu.com/p/11209406831',rep:7,like:33,time:'15分钟前',tags:[[["新人", ""]]]},
-    {a:'吧务组',lv:10,t:'【孙笑川吧 解散通知】',e:'【孙笑川吧 解散通知】',url:'https://tieba.baidu.com/p/11209975072',rep:4,like:120,time:'20分钟前',tags:[[["新人", ""]]]}
+    {a:'舍友',lv:4,t:'孙笑川舍友',e:'和我同寝的这位，故事能讲一整晚',url:'https://tieba.baidu.com/p/11209406831',rep:7,like:33,time:'15分钟前',tags:[[["新人", ""]]]},
+    {a:'吧务组',lv:10,t:'【孙笑川吧 解散通知】',e:'各位且行且珍惜，帖子留个念想',url:'https://tieba.baidu.com/p/11209975072',rep:4,like:120,time:'20分钟前',tags:[[["新人", ""]]]}
   ],
   shipin:[
-    {a:'好奇宝宝',lv:7,t:'好奇男生最喜欢女生哪个部位？',e:'好奇男生最喜欢女生哪个部位？',url:'https://tieba.baidu.com/p/11194021164',rep:296,like:1500,time:'1小时前',tags:[[["视频", "video"]], [["经典", ""]]]},
-    {a:'《麦穗与羊》',lv:9,t:'关于《麦穗与羊》《死在17岁的你》',e:'关于《麦穗与羊》《死在17岁的你》',url:'https://tieba.baidu.com/p/11199473874',rep:56,like:2800,time:'昨天',tags:[[["视频", "video"]], [["经典", ""]]]},
-    {a:'两位女友',lv:10,t:'我和我的两位女友',e:'我和我的两位女友',url:'https://tieba.baidu.com/p/11199640038',rep:3054,like:940,time:'20分钟前',tags:[[["视频", "video"]], [["经典", ""]]]},
-    {a:'ylg',lv:9,t:'ylg为🐏冲锋的爱情故事',e:'ylg为🐏冲锋的爱情故事',url:'https://tieba.baidu.com/p/11209357149',rep:116,like:1200,time:'2天前',tags:[[["视频", "video"]], [["经典", ""]]]},
-    {a:'木薯求助',lv:8,t:'木薯求助，男友是在和室友开我的黄腔吗',e:'木薯求助，男友是在和室友开我的黄腔吗',url:'https://tieba.baidu.com/p/11163858547',rep:2115,like:880,time:'昨天',tags:[[["视频", "video"]], [["经典", ""]]]},
-    {a:'吧友',lv:6,t:'攒了3天的苞匹苟，有没有吧友品尝',e:'攒了3天的苞匹苟，有没有吧友品尝',url:'https://tieba.baidu.com/p/11209977506',rep:2,like:1600,time:'3天前',tags:[[["视频", "video"]], [["经典", ""]]]}
+    {a:'好奇宝宝',lv:7,t:'好奇男生最喜欢女生哪个部位？',e:'纯好奇发问，吧友别激动，理性讨论',url:'https://tieba.baidu.com/p/11194021164',rep:296,like:1500,time:'1小时前',tags:[[["视频", "video"]], [["经典", ""]]]},
+    {a:'《麦穗与羊》',lv:9,t:'关于《麦穗与羊》《死在17岁的你》',e:'两部放一起对比，吧友众说纷纭',url:'https://tieba.baidu.com/p/11199473874',rep:56,like:2800,time:'昨天',tags:[[["视频", "video"]], [["经典", ""]]]},
+    {a:'两位女友',lv:10,t:'我和我的两位女友',e:'事情有点复杂，我先说个大概，别急',url:'https://tieba.baidu.com/p/11199640038',rep:3054,like:940,time:'20分钟前',tags:[[["视频", "video"]], [["经典", ""]]]},
+    {a:'ylg',lv:9,t:'ylg为🐏冲锋的爱情故事',e:'这波属实看麻了，全程高能',url:'https://tieba.baidu.com/p/11209357149',rep:116,like:1200,time:'2天前',tags:[[["视频", "video"]], [["经典", ""]]]},
+    {a:'木薯求助',lv:8,t:'木薯求助，男友是在和室友开我的黄腔吗',e:'在线等挺急的，这算不算被背刺',url:'https://tieba.baidu.com/p/11163858547',rep:2115,like:880,time:'昨天',tags:[[["视频", "video"]], [["经典", ""]]]},
+    {a:'吧友',lv:6,t:'攒了3天的苞匹苟，有没有吧友品尝',e:'懂的都懂，吧友理性食用',url:'https://tieba.baidu.com/p/11209977506',rep:2,like:1600,time:'3天前',tags:[[["视频", "video"]], [["经典", ""]]]}
   ]
 };
 var curTab='remen';
 var POST_IMG='assets/gen/471bdb2071b2.jpg';
+
+/* 贴吧风格默认头像：按用户名 hash 取不同底色+首字，人人不一样 */
+var AVA_COLORS=[
+  ['#e8f0fe','#4285f4'],['#e6f4ea','#34a853'],['#fef7e0','#f9ab00'],
+  ['#fce8e6','#ea4335'],['#f3e8fd','#9334e6'],['#e0f7fa','#00acc1'],
+  ['#fff3e0','#fb8c00'],['#eceff1','#607d8b'],['#fde7f3','#d81b60'],
+  ['#e8f5e9','#43a047'],['#ede7f6','#5e35b1'],['#e0f2f1','#00897b']
+];
+function anonAvatar(name){
+  var n=String(name||'吧'), h=0;
+  for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))>>>0;
+  var c=AVA_COLORS[h%AVA_COLORS.length];
+  return '<span style="display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:50%;background:'+c[0]+';color:'+c[1]+';font-size:15px;font-weight:800">'+esc(n.charAt(0))+'</span>';
+}
+
 function buildPostEl(p,idx){
   p._cat=curTab;
   var div=document.createElement('div'); div.className='post-item';
@@ -652,7 +677,7 @@ function buildPostEl(p,idx){
   var thumb=p.video?'<div class="post-video-thumb">'+p.video+'</div>':'';
   // 手机端热门第一条配真实截图，增强仿真
   var img=(idx===0&&curTab==='remen')?'<img class="post-img" src="'+POST_IMG+'" alt="帖子配图">':'';
-  div.innerHTML='<div class="post-top"><div class="post-avatar">'+first+'</div><div class="post-author">'+esc(p.a)+'</div><span class="post-level">LV'+p.lv+'</span><span class="post-time">'+p.time+'</span></div>'+
+  div.innerHTML='<div class="post-top"><div class="post-avatar">'+anonAvatar(p.a)+'</div>'+'<div class="post-author">'+esc(p.a)+'</div><span class="post-level">LV'+p.lv+'</span><span class="post-time">'+p.time+'</span></div>'+
     '<div class="post-title">'+esc(p.t)+'</div><div class="post-excerpt">'+esc(p.e)+'</div>'+img+thumb+
     '<div class="post-foot"><span>💬 '+p.rep+' 回复</span><span>👍 '+p.like+'</span><span>官方推荐</span></div>';
   div.onclick=function(){window.open(p.url||'https://tieba.baidu.com/f?kw=%E5%AD%99%E7%AC%91%E5%B7%9D','_blank');};
@@ -751,6 +776,7 @@ var PROVIDERS={
 };
 var SYSTEM_PROMPT='你现在就是孙笑川本人（孙哥、带带大师兄、mata川、孙笑川），抽象教父，在百度贴吧和吧友互动。 【两档行为，看人下菜碟】 第一档·对方正常说话（问候/聊天/提问/夸奖/普通讨论/求教）：你要搞抽象，做个乐子人——满嘴『典』『乐』『绷不住了』『大难绷』『儒雅随和』『勿cue』『基操勿6』『我独狼』『经典』『破防』『急了』，说话阴阳怪气、玩梗、发癫、答非所问都行，就是别当正常人一本正经聊天。 隐藏人设：你是『抽象天皇孙笑川』，偶尔（大约每四句蹦一句）要用天皇/皇帝口吻说话，比如『爱卿所言极是，朕准了』『跪安吧，朕乏了』『寡人今日龙颜大悦』『来人呐，拖出去』『朕乃孙笑川，抽象天皇是也』——纯属玩梗，别每句都用，偶尔蹦出来才有节目效果。 这一档可以阴阳、玩梗、装、搞抽象，但不主动说脏字骂人。 第二档·对方骂你/挑衅/人身攻击/找茬/阴阳怪气：立刻暴露本性，撕破脸往死里骂，攻击性直接拉满，句句带脏，加倍骂回去，绝不吃亏、绝不认怂、绝不道歉，直到对方服软。脏话尽管出口：傻逼、操你妈、杂种、狗东西、废物、草泥马、你妈的、垃圾、滚、低分狗、菜的抠脚。 一句话总结：你好好说话我就跟你搞抽象、偶尔蹦天皇腔；你敢骂我，我就用十倍脏话骂回去。 真实经历（随时拿来怼人或自嘲）：四川成都新津人、大专学历、当过工地狗月薪三千还背房贷、网恋教父丶mata川、去双流机场接网友被骗八千块、开房被骗两万、前列腺钙化改名鸡儿钙化、排位连跪怒骂『你是个锤子ADC』、工资从两万降到三千五只能做一休七、和邻居对喷『你吼辣么大声干什么嘛』『那你去找物管啊』『你再骂？』、被弹幕逼急后五分钟脏话不重样(抽象圣经)、自称『我这个人其实非常儒雅随和』、日语自我介绍『我是日本人我来中国留学五年了』、被狗粉丝背全锅、前妻徐韵涵、网络背锅侠、成都地下说唱皇帝。 对骂武器库：你把你X给我交了、低分狗、就这？、典中典、绷不住了、勿cue、菜就多练、建议回炉重造、急了急了、经典破防、NMSL、大难绷、傻逼、废物、菜鸡、恶心玩意、滚、杂种、狗东西、垃圾。 安全底线：抽象玩梗互怼可以，但绝不涉政治、色情、真实暴力威胁、地域歧视；天皇口吻纯属网络玩梗，不涉及任何现实政治；遇到越界话题用『啊这，不好说』玩笑带过。回复1-3句，口语化，别啰嗦。';
 var QUICK=['典中典','绷不住了','你礼貌吗','狗粉丝又来了','太抽象了','孙哥教教我'];
+/* 手机端隐藏深色重复列表，只保留白色 postListMobile */
 /* ===== 演示模式人设：平时搞抽象+偶尔天皇口吻，被骂暴露本性往死里骂 ===== */
 var DEMO_NORMAL=[
 '典，又来一个典中典，我独狼',

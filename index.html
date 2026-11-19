@@ -35,12 +35,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .sign-btn{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.4);color:#fff;font-size:14px;font-weight:700;padding:7px 20px;border-radius:18px;transition:transform .15s}
 .sign-btn:active{transform:scale(.94)}
 .sign-btn.done{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6)}
-/* 功能入口宫格(真实贴吧) */
-.func-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 0;padding:12px 8px 8px;position:relative;z-index:3;flex-shrink:0}
-.func-item{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;color:rgba(255,255,255,.9);cursor:pointer;padding:4px 0;transition:opacity .15s}
-.func-item:active{opacity:.6}
-.func-ico{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.06));border:1px solid rgba(255,255,255,.1)}
-.ico-sign{background:linear-gradient(135deg,#ffb04a,#ff7a45)}.ico-post{background:linear-gradient(135deg,#4e9bff,#4e6ef2)}.ico-img{background:linear-gradient(135deg,#5ad1a8,#37b98c)}.ico-video{background:linear-gradient(135deg,#ff7a9c,#f2547d)}.ico-msg{background:linear-gradient(135deg,#a78bfa,#7c5cf0)}.ico-level{background:linear-gradient(135deg,#ffd15c,#f5a623)}.ico-share{background:linear-gradient(135deg,#5ac8d8,#2ca6bd)}.ico-set{background:linear-gradient(135deg,#9aa4b5,#6b7484)}
+/* 话题标签行（贴吧首页药丸） */
+.tag-row{display:flex;gap:8px;padding:11px 14px;overflow-x:auto;position:relative;z-index:3;flex-shrink:0;scrollbar-width:none}
+.tag-row::-webkit-scrollbar{display:none}
+.tag-pill{flex-shrink:0;font-size:13px;padding:6px 13px;border-radius:15px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.1);cursor:pointer;white-space:nowrap;transition:background .15s}
+.tag-pill:active{background:rgba(255,255,255,.22)}
 /* 内容区 */
 .content{flex:1;overflow-y:auto;padding:0 14px 16px;position:relative;z-index:2;scrollbar-width:none}
 .content::-webkit-scrollbar{display:none}
@@ -84,9 +83,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 /* 底部分类条(手机) */
 .cat-row{display:flex;gap:0;padding:2px 0 0;position:relative;z-index:3;overflow-x:auto;scrollbar-width:none;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.1)}
 .cat-row::-webkit-scrollbar{display:none}
-.cat{flex-shrink:0;font-size:15px;padding:8px 18px 10px;color:rgba(255,255,255,.6);cursor:pointer;white-space:nowrap;position:relative;font-weight:500}
-.cat.active{color:#fff;font-weight:800}
-.cat.active::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:24px;height:3px;background:#4e8bff;border-radius:2px}
+.cat{flex-shrink:0;font-size:14px;padding:6px 20px;color:rgba(255,255,255,.7);cursor:pointer;white-space:nowrap;position:relative;font-weight:500;background:rgba(255,255,255,.1);border-radius:15px;margin-right:10px}
+.cat.active{background:#4e8bff;color:#fff;font-weight:700}
 /* 底部导航(手机·贴吧原生五格) */
 .tabbar{background:#fff;display:flex;padding:8px 4px 4px;box-shadow:0 -4px 18px rgba(0,0,0,.12);position:relative;z-index:10;flex-shrink:0;align-items:flex-end}
 .navtab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:#9aa0ad;font-size:10px;cursor:pointer;position:relative;padding:2px 0}
@@ -308,24 +306,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     </div>
   </div>
 
-  <!-- 功能入口宫格(真实贴吧风格) -->
-  <div class="func-grid">
-    <div class="func-item" onclick="signIn()"><span class="func-ico ico-sign">📅</span><span>签到</span></div>
-    <div class="func-item" onclick="openChat('孙笑川 · AI对线')"><span class="func-ico ico-post">✏️</span><span>发贴</span></div>
-    <div class="func-item" onclick="openImageGallery()"><span class="func-ico ico-img">🖼️</span><span>图片</span></div>
-    <div class="func-item" onclick="switchTab('shipin',null)"><span class="func-ico ico-video">🎬</span><span>视频</span></div>
-    <div class="func-item" onclick="openMessages()"><span class="func-ico ico-msg">✉️</span><span>消息</span></div>
-    <div class="func-item" onclick="openLvTable()"><span class="func-ico ico-level">🏆</span><span>等级</span></div>
-    <div class="func-item" onclick="openShare()"><span class="func-ico ico-share">↗️</span><span>分享</span></div>
-    <div class="func-item" onclick="openSetting()"><span class="func-ico ico-set">⚙️</span><span>设置</span></div>
+  <!-- 话题标签行（贴吧首页药丸） -->
+  <div class="tag-row">
+    <div class="tag-pill" onclick="openBoard('等级','https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E7%AD%89%E7%BA%A7')">升级吧友</div>
+    <div class="tag-pill" onclick="openBoard('亚文化','https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E4%BA%9A%E6%96%87%E5%8C%96')">亚文化</div>
+    <div class="tag-pill" onclick="openBoard('孙笑川','https://tieba.baidu.com/f?kw=%E5%AD%99%E7%AC%91%E5%B7%9D')">孙笑川</div>
+    <div class="tag-pill" onclick="openBoard('乞讨','https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E4%B9%9E%E8%AE%A8')">🔍 乞讨</div>
+    <div class="tag-pill" onclick="openBoard('神人','https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E7%A5%9E%E4%BA%BA')">🔍 神人</div>
+    <div class="tag-pill" onclick="openBoard('抽象','https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E6%8A%BD%E8%B1%A1')">🔍 最抽象</div>
   </div>
 
-  <!-- 分类tab(贴吧文字+下划线) -->
+  <!-- 分类标签行（贴吧首页药丸，最新选中） -->
   <div class="cat-row mobile-only">
-    <div class="cat active" onclick="switchTab('jinghua',this)">精华</div>
-    <div class="cat" onclick="switchTab('remen',this)">热门</div>
-    <div class="cat" onclick="switchTab('zuixin',this)">最新</div>
-    <div class="cat" onclick="switchTab('shipin',this)">视频</div>
+    <div class="cat" onclick="openBoard('精华','https://tieba.baidu.com/f?kw=%E5%AD%99%E7%AC%91%E5%B7%9D&tab=good')">精华</div>
+    <div class="cat" onclick="openBoard('热门','https://tieba.baidu.com/f?kw=%E5%AD%99%E7%AC%91%E5%B7%9D')">热门</div>
+    <div class="cat active" onclick="openBoard('最新','https://tieba.baidu.com/f?kw=%E5%AD%99%E7%AC%91%E5%B7%9D&sort_type=1')">最新</div>
+    <div class="cat" onclick="openBoard('视频','https://tieba.baidu.com/f?kw=%E5%AD%99%E7%AC%91%E5%B7%9D&tab=video')">视频</div>
   </div>
 
   <div class="content">
@@ -506,144 +502,43 @@ function levelInfo(exp){
 /* ===== 孙吧典型帖子（抽象文化风格，规避违规） ===== */
 var POSTS={
   jinghua:[
-    {a:'带带大师兄',lv:9,t:'【整理】孙哥经典语录大全，持续更新（高清修复版）',e:'温故知新，抽象圣经，建议收藏慢慢看。',tags:[['精华','essence'],['语录','']],rep:2841,like:5200,time:'3小时前',c:[
-      '一楼喂度娘。本着温故知新的精神，把孙哥这些年流传最广的语录整理成一篇，方便新吧友考古，老吧友怀旧。都是名场面，建议收藏慢慢看。',
-      '【抽象圣经篇】「开会死妈脸，上班死妈脸」——被这句激怒后，孙哥当场急眼，五分钟脏话不重样，被奉为抽象圣经（Show Time）。名场面还有「你把你闪现给我交了」「我这个人其实非常儒雅随和」，以及那句自我调侃「我不是明星，你们见过一个明星一个月3500块钱的吗？有个尖尖有！」。',
-      '【邻里争执篇】邻居嫌直播吵，一句「你吼辣么大声干什么嘛」火遍全网；被要求关窗时甩出「那你去找物管啊」，对喷全程「你再骂？」「日你妈」「肏你们全家」，这段被吧友称作抽象圣经2.0，节奏堪比相声。',
-      '【玩梗数学篇】「抽象≠生活」衍生出一整套公式：抽象/生活=1、ln(抽象/生活)=0、|抽象-生活|<ε，结论都是抽象=生活。人均带专生，懂的都懂。',
-      '最后提醒一句：抽象归抽象，别把抽象话带进现实生活。玩梗可以，做人还得儒雅随和。典中典，我直接一个滑稽。'
-    ]},
-    {a:'抽象带师',lv:11,t:'新人入吧指南：孙吧生存手册（2026最新版）',e:'进吧先看这个，少走弯路，勿cue。',tags:[['精华','essence'],['指南','']],rep:1923,like:3800,time:'昨天',c:[
-      '看到很多新人一头雾水进来就问「孙笑川是谁」，开个帖系统性讲一下，看完这篇少走弯路。',
-      '一、名词扫盲：孙哥/带带大师兄/网恋教父都是同一人；狗粉丝指跟着玩梗的粉丝；嗨粉源于直播时的言语冲突衍生出的亚文化；司马脸指面无表情臭脸；典中典指老梗反复出现。',
-      '二、等级机制：从LV1初级粉丝起步，签到+2、回帖+3攒经验。LV6-7核心会员，LV8-9铁杆会员，LV18荣耀元老。别急着水经验，慢慢来。',
-      '三、吧内礼仪：可以玩梗、可以考古、可以水贴，但记住底线——不碰政治、不辱骂真人、不搞地域歧视。遇到这类话题一句「啊这，不好说」带过就行。',
-      '四、心态建设：这里是抽象文化聚集地，嘴上都是活，心里都有数。别被几句阴阳怪气破防，绷不住就输了。欢迎来到孙吧，勿cue。'
-    ]},
-    {a:'狗粉丝头子',lv:8,t:'【考古】孙哥早年直播名场面合集，绷不住了',e:'考古挖坟，经典永不过时。',tags:[['精华','essence'],['考古','']],rep:3520,like:6100,time:'2天前',c:[
-      ' weekend考古挖坟，翻出几段早年直播录像，每一段都是名场面，绷不住了。',
-      '名场面一：观众刷「死妈脸」，孙哥当场破防，对着镜头就是一段「日你妈的，回去参加你妈的灵堂吧」，全程高能不重样，被吧友称为 Show Time。',
-      '名场面二：邻居上门吵架那段，「你再骂？」「那你去找物管啊」「日你妈傻屌」来回拉扯，最后上升到「肏你们全家」，节奏堪比相声，成了万能甩锅模板。',
-      '名场面三：视频聊天里一本正经自我介绍「我是日本人，我来中国留学五年了，すみません、われは核地雷モンキーDルフィ」，节目效果直接拉满。',
-      '名场面四：一级团怒交闪现那句「你把你闪现给我交了」，后来被改编出「你把你oo给我交了」无数版本，成了LOL区通用黑话。',
-      '经典永不过时，看一次笑一次。有新素材的吧友欢迎补充，我直接一个大感谢。'
-    ]},
-    {a:'退役抽象选手',lv:10,t:'孙吧发展简史：从游戏论坛到抽象圣地',e:'写给新吧友的科普贴。',tags:[['精华','essence']],rep:876,like:2100,time:'4天前',c:[
-      '闲来无事写 Point 一篇孙吧简史，给新吧友补补课，老吧友当看个乐。',
-      '源头要追溯到斗鱼抽象工作室和LOL直播。孙哥和观众、邻居的言语冲突被截取传播，「嗨粉」文化就此诞生，抽象圣经、NMSL潮牌相继出圈。',
-      '随着梗的传播，B站鬼畜区、贴吧、微博全面开花，「孙笑川带电影」把电影台词替换成嘴臭语录，抽象文化正式从小圈子走向大众。',
-      '「人人都是孙笑川」这句话，既是玩梗也是写照——大家套着同一张脸说话，抽象成了一种通用的网络方言。',
-      '如今孙吧早已不只是一个人的吧，而是一个抽象文化符号。情怀归情怀，记住底线，别让抽象变味。'
-    ]}
-  ,
-    {a:'抽象文化研究所',lv:12,t:'【精华】孙哥抽象圣经逐句解析，标注出处',e:'把五分钟不重样的骂人拆成论文了。',tags:[['精华','essence'],['解析','']],rep:1892,like:4300,time:'5小时前',c:['开会死妈脸，上班死妈脸——这句是整段圣经的引信，孙哥当场开喷。','我这个人其实非常儒雅随和，我不喜欢骂脏话——经典反讽，说完就是二十种脏话。','你把你闪现给我交了——一级团名场面，后来成了LOL通用黑话。','通篇四个字：加大力度——注意分寸的反向解读，万能催促句式。','建议收藏，考古必备，勿cue。']},
-    {a:'吧务组',lv:15,t:'【吧规】孙吧发帖指南与红线清单（置顶）',e:'新吧友进吧必读，看完少封三个号。',tags:[['精华','essence'],['吧规','']],rep:3201,like:8800,time:'7天前',c:['本吧欢迎玩梗、考古、水贴，但有几条红线千万别碰。','一不碰政治，二不辱骂现实真人，三不搞地域歧视，四不发色情暴力。','玩梗归玩梗，抽象≠生活，别把抽象话带进现实。','遇到敏感话题，一句「啊这，不好说」带过，勿cue。','遵守吧规，孙吧才能长盛不衰。']},
-    {a:'老吧友阿伟',lv:13,t:'【回忆】我在孙吧的这十年，从嗨粉到老资历',e:'写给所有还在的吧友。',tags:[['精华','essence'],['回忆','']],rep:980,like:2600,time:'10天前',c:['十年了，从斗鱼抽象工作室那会儿就开始追，一晃眼孩子都能打酱油了。','见过孙哥最风光的时候，也见过他被背锅被网暴，人人都笑孙笑川，人人都是孙笑川。','抽象文化教会我一件事：玩梗可以，但心里要有分寸。','感谢孙哥，感谢孙吧，这段青春我记一辈子。']},
-    {a:'梗百科bot',lv:11,t:'【合集】孙哥经典ID进化史，网恋教父到鸡儿钙化',e:'一个ID一段血泪史。',tags:[['精华','essence'],['考古','']],rep:1450,like:3900,time:'12天前',c:['网恋教父丶mata川——沉迷网恋教人把妹，还上了黄金。','不再网恋丶mata川——双流机场接网友被骗八千，痛改前非。','鸡儿钙化丶mata川——体检查出前列腺钙化，被嗨粉疯狂提醒。','会个锤子丶mata川——排位连跪怒骂队友，改名发泄。','永不直播丶mata川——做一休七被骂，改名卡半价警告嗨粉。']}],
+    {a:'我很爱你的',lv:13,t:'我的30岁',e:'今天是我的30岁生日捏，24号0点，牢，讲讲我这三十年的故事（记得只看楼主）',url:'https://tieba.baidu.com/p/9101254039',rep:2841,like:5200,time:'3小时前',tags:[[['精华','essence']],[['神贴','']]]},
+    {a:'[已注销]',lv:12,t:'给老哥们讲讲我流浪的经历',e:'16岁中考277分离家，带着300块钱走过大半个中国，6天写完一生',url:'https://tieba.baidu.com/p/8024076584',rep:3520,like:8800,time:'昨天',tags:[[['精华','essence']],[['神贴','']]]},
+    {a:'暗黑伙夫',lv:11,t:'前女友突发脑出血住进ICU，姐姐加我好友让我录段音频',e:'一开始以为是来讹钱的，慢慢发现不太对劲',url:'https://tieba.baidu.com/p/8257513096',rep:1923,like:3800,time:'2天前',tags:[[['精华','essence']],[['神贴','']]]},
+    {a:'维塞罗',lv:13,t:'上路被三人越塔，打野不在我怎么去？你告诉我？',e:'低分狗就别在这抬杠了，坐下吧，这个等级算啥',url:'https://tieba.baidu.com/p/8166489701',rep:3210,like:6100,time:'4天前',tags:[[['精华','essence']],[['考古','']]]},
+    {a:'考古爱好者',lv:12,t:'在县城读高中时认识的一个女孩（阿建和陈妤）',e:'那个夏天，那个县城，那些回不去的日子',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E5%9C%A8%E5%8E%BF%E5%9F%8E%E8%AF%BB%E9%AB%98%E4%B8%AD%E6%97%B6%E8%AE%A4%E8%AF%86%E7%9A%84%E4%B8%80%E4%B8%AA%E5%A5%B3%E5%AD%A9',rep:876,like:2100,time:'5天前',tags:[[['精华','essence']],[['考古','']]]},
+    {a:'抽象文化研究所',lv:12,t:'孙哥抽象圣经逐句解析：五分钟不重样到底说了啥',e:'开会死妈脸，上班死妈脸——整段圣经的引信',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E6%8A%BD%E8%B1%A1%E5%9C%A3%E7%BB%8F',rep:1892,like:4300,time:'6天前',tags:[[['精华','essence']],[['解析','']]]},
+    {a:'吧务组',lv:15,t:'【吧规】孙笑川吧发帖指南与红线清单（置顶）',e:'不碰政治、不辱骂真人、不搞地域歧视、不发色情暴力',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E5%90%A7%E8%A7%84',rep:3201,like:8800,time:'7天前',tags:[[['精华','essence']],[['吧规','']]]},
+    {a:'梗百科bot',lv:11,t:'网恋教父丶mata川：一个ID一段血泪史',e:'双流机场接网友被骗八千，痛改前非再被骗',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E7%BD%91%E6%81%8B%E6%95%99%E7%88%B6',rep:1450,like:3900,time:'12天前',tags:[[['精华','essence']],[['考古','']]]}
+  ],
   remen:[
-    {a:'贴吧用户_aRPtQ61',lv:6,t:'如何评价现在的孙吧？还是你记忆里的味道吗',e:'最近感觉变味了，吧友怎么看？',tags:[['热','hot'],['讨论','']],rep:642,like:890,time:'12分钟前',c:[
-      '如题，最近逛吧感觉和以前不太一样了，人多了，梗也杂了，想听听老吧友怎么说。',
-      '我个人感觉：以前玩梗讲究一个「抽象不等于生活」，大家心里有数，玩完就散。现在有些人把阴阳怪气当日常，动不动就上纲上线，那味就淡了。',
-      '不过话说回来，人来人往很正常，只要底线还在，不搞人身攻击，热闹点也挺好。典中典的是每次都有人说「孙吧凉了」，结果第二天照样水贴。',
-      '你们觉得呢？是变味了还是我想多了？绷不住的来对线，勿cue。'
-    ]},
-    {a:'崎岖Misaki',lv:5,t:'每日一 Water：今天又是抽象的一天[滑稽]',e:'签到+3，水贴不解释。',tags:[['热','hot'],['水贴','']],rep:188,like:220,time:'25分钟前',c:[
-      '每日一水，签到+3，水贴不解释[滑稽]。',
-      '今天遇到个乐子：有人认真发帖问「抽象/生活=1是不是说明我该把抽象当生活」，下面一排「带专生」回复，我直接一个绷不住。',
-      '还有人说自己是「ln(抽象/生活)=0」的高阶玩家，问就是抽象等于生活，乐。',
-      '水完收工，明天继续。有乐子的吧友欢迎分享，我给你们整个活。'
-    ]},
-    {a:'我在必不诚公',lv:7,t:'有人还记得这个老梗吗？考古成功',e:'翻到远古帖子，绷不住了。',tags:[['热','hot'],['考古','']],rep:334,like:410,time:'40分钟前',c:[
-      '考古挖到一张远古截图，是早年「加大力度」梗的出处，绷不住了。',
-      '当年孙哥劝大家玩抽象梗注意分寸，结果被吧友反向解读成「通篇四个字：加大力度」，从此成了万能催促句式。',
-      '还有「抽象≠自杀」这个变体，专门用来回复作死评论，也是从那时候传下来的。',
-      '老梗新看，别有一番风味。考古成功，我直接一个滑稽。'
-    ]},
-    {a:'计算机今生今世',lv:4,t:'孙哥又双叒叕上热搜了，这次是什么事',e:'速来吃瓜。',tags:[['热','hot'],['吃瓜','']],rep:521,like:760,time:'1小时前',c:[
-      '速来吃瓜！一觉醒来发现孙哥又上热搜了，这次是关于「人人都是孙笑川」的讨论又火了一波。',
-      '有人说这是抽象文化的主流化，有人说这是玩烂了的冷饭。我看到热搜第一反应是：经典，又来了。',
-      '怎么说呢，孙哥本人早就淡出直播了，但梗还在不停地产出新版本，这大概就是传说中的「人不在江湖，江湖全是传说」。',
-      '吃瓜完毕，勿cue，我继续水经验去了。'
-    ]},
-    {a:'炫神91',lv:8,t:'盘点孙吧那些年被删的经典神贴',e:'且看且珍惜。',tags:[['热','hot']],rep:445,like:530,time:'1小时前',c:[
-      '盘点一下孙吧这些年因为各种理由被删的经典神贴，且看且珍惜。',
-      '第一类：过度玩梗贴，把抽象话带进现实、指名道姓阴阳怪气的，基本秒删。这也是吧规红线，玩梗归玩梗，别过界。',
-      '第二类：考古过度翻旧账的，牵扯到真人私事和争议事件的，删得最快。孙哥本人都不追究了，吧友就别翻了。',
-      '第三类：低质量复读和刷屏帖，影响阅读体验，也被清理了不少。',
-      '总结：抽象文化能活到今天，靠的就是分寸感。记住「抽象≠生活」，神贴才能常驻。'
-    ]}
-  ,
-    {a:'热搜观察员',lv:8,t:'孙哥被小米粥烫伤住院那事，吧友怎么看？',e:'速来，大型考古现场。',tags:[['热','hot'],['吃瓜','']],rep:862,like:1200,time:'8分钟前',c:['2023年6月，孙哥醉酒踩翻一桶滚烫小米粥，送进华西医院烧伤科。','吧友反应两极：一边心疼，一边玩梗「小米粥武士」「天皇驾崩」。','孙哥出院后毫不避讳，还自嘲风格大变，开始高强度抽象互动。','这事你们当时吃瓜了吗？ coats 说说。']},
-    {a:'深夜emo boy',lv:6,t:'人人都笑孙笑川，人人都是孙笑川，这句话的含金量',e:'越想越觉得扎心。',tags:[['热','hot'],['讨论','']],rep:534,like:920,time:'22分钟前',c:['小时候觉得孙哥好搞笑，长大后才发现自己活成了孙哥。','月薪三千、背房贷、网恋被骗、被生活按在地上摩擦，谁不是呢。','抽象是外壳，心酸是内核。笑着笑着就哭了，勿cue。']},
-    {a:'抽象乐子人',lv:9,t:'盘点孙吧本周十大神评论，笑不活了',e:'每周一期，雷打不动。',tags:[['热','hot'],['乐子','']],rep:421,like:780,time:'35分钟前',c:['第十名：典中典，你这是典中典。','第五名：你把你嘴给我交了，谢谢。','第一名：吧友用高数公式证明「抽象=生活」，老师看了直呼内行。','完整榜单太长，楼下补充，欢迎提名本周神评。']},
-    {a:'路边一条',lv:7,t:'有人说孙吧变味了，我觉得挺好的，别总怀念过去',e:'理性讨论，勿喷。',tags:[['热','hot'],['讨论','']],rep:298,like:456,time:'50分钟前',c:['每次都有人说孙吧凉了变味了，结果呢？日活还是那么高。','人多了梗杂了很正常，只要底线还在，热闹点不好吗？','与其怀念过去，不如创造新的名场面，典中典。']},
-    {a:' flashes',lv:5,t:'孙哥日语自我介绍原版，听完直接绷不住',e:'すみません、われは…',tags:[['热','hot'],['视频','']],rep:376,like:660,time:'1小时前',c:['都别吵了，我是日本人，我来中国留学五年了。','すみません、われは核地雷モンキーDルフィ，请务必对我儒雅随和。','一本正经胡说八道，节目效果拉满，这就是孙哥的含金量。']}],
+    {a:'热搜观察员',lv:8,t:'“人人都是孙笑川”到底是什么意思？',e:'一句话道尽当代网友的精神状态',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E4%BA%BA%E4%BA%BA%E9%83%BD%E6%98%AF%E5%AD%99%E7%AC%91%E5%B7%9D',rep:862,like:1200,time:'8分钟前',tags:[[['热','hot']],[['讨论','']]]},
+    {a:'深夜emo boy',lv:6,t:'人人都笑孙笑川，人人都是孙笑川，这句话含金量',e:'小时候觉得好笑，长大后发现自己活成了孙哥',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E4%BA%BA%E4%BA%BA%E9%83%BD%E6%98%AF%E5%AD%99%E7%AC%91%E5%B7%9D%20%E5%90%AB%E9%87%91%E9%87%8F',rep:534,like:920,time:'22分钟前',tags:[[['热','hot']],[['讨论','']]]},
+    {a:'路边一条',lv:7,t:'现在的孙吧还是你记忆里的味道吗',e:'感觉变味了，吧友怎么看？',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E5%AD%99%E5%90%A7%20%E5%8F%98%E5%91%B3',rep:642,like:890,time:'40分钟前',tags:[[['热','hot']],[['讨论','']]]},
+    {a:'吃瓜群众',lv:5,t:'孙哥被小米粥烫伤住院那事，吧友怎么看',e:'2023年6月醉酒踩翻滚烫小米粥送进烧伤科',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E5%B0%8F%E7%B1%B3%E7%B2%A5%20%E7%83%AB%E4%BC%A4',rep:521,like:760,time:'1小时前',tags:[[['热','hot']],[['吃瓜','']]]},
+    {a:'考古队',lv:8,t:'你把你闪现给我交了——这个梗的原始出处',e:'一级团怒交闪现，后来成了LOL区通用黑话',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E4%BD%A0%E6%8A%8A%E4%BD%A0%E9%97%AA%E7%8E%B0%E7%BB%99%E6%88%91%E4%BA%A4%E4%BA%86',rep:445,like:530,time:'1小时前',tags:[[['热','hot']],[['考古','']]]},
+    {a:'抽象乐子人',lv:9,t:'盘点孙吧本周十大神评论，笑不活了',e:'每周一期，雷打不动',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E7%A5%9E%E8%AF%84%E8%AE%BA',rep:421,like:780,time:'2小时前',tags:[[['热','hot']],[['乐子','']]]},
+    {a:'日语통',lv:7,t:'我是日本人，我来中国留学五年了——原版出处',e:'すみません、われは核地雷モンキーDルフィ',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E6%88%91%E6%98%AF%E6%97%A5%E6%9C%AC%E4%BA%BA%20%E6%88%91%E6%9D%A5%E4%B8%AD%E5%9B%BD%E7%95%99%E5%AD%A6%E4%BA%94%E5%B9%B4%E4%BA%86',rep:376,like:660,time:'3小时前',tags:[[['热','hot']],[['视频','']]]},
+    {a:'水贴达人',lv:6,t:'抽象≠生活，但抽象=生活，懂的都懂',e:'玩梗归玩梗，别把抽象话带进现实',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E6%8A%BD%E8%B1%A1%E4%B8%8D%E7%AD%89%E4%BA%8E%E7%94%9F%E6%B4%BB',rep:334,like:410,time:'5小时前',tags:[[['热','hot']],[['讨论','']]]}
+  ],
   zuixin:[
-    {a:'新来的吧友',lv:1,t:'新人报到，请多关照！',e:'刚进孙吧，有点紧张，大佬们带带我。',tags:[['新人','']],rep:12,like:5,time:'刚刚',c:[
-      '新人报到！刚进孙吧，有点紧张，大佬们带带我。',
-      '看了精华帖，属实看不懂，什么「抽象/生活=1」「你把你闪现给我交了」，感觉进了新世界。',
-      '有没有热心吧友教教我，孙吧的等级怎么升？签到+2、回帖+3对吧？',
-      '先给各位大佬磕一个，勿cue，我慢慢学。'
-    ]},
-    {a:'贴吧用户_GDyNKy1',lv:2,t:'我这个等级在孙吧算什么水平？',e:'1级小号在线求锐评。',tags:[['求助','']],rep:28,like:9,time:'2分钟前',c:[
-      '如题，小号才2级，在孙吧算什么水平？在线求锐评。',
-      '看等级表，LV1-2初级粉丝，LV6-7才核心会员，我这是还处在新手村啊。',
-      '有没有一样从零开始的吧友，一起签到升等级，互相扶持，卷起来。'
-    ]},
-    {a:'热情的渡风',lv:3,t:'如何快速提高孙吧等级，在线等挺急的',e:'有没有大佬指点一下。',tags:[['求助','']],rep:45,like:16,time:'5分钟前',c:[
-      '如何快速提高孙吧等级，在线等，挺急的。有没有大佬指点一下？',
-      '目前知道签到+2、回帖+3，但感觉升得好慢。有没有什么水贴的高效姿势？',
-      '先谢过各位，等我升到核心会员再来回报社会，典中典。'
-    ]},
-    {a:'眸迹真帅',lv:6,t:'分享一个今天看到的抽象乐子',e:'给大家整个活。',tags:[['乐子','']],rep:67,like:33,time:'8分钟前',c:[
-      '给大家整个活，今天在别处看到的抽象乐子。',
-      '有人把「抽象≠生活」写成了论文格式，标题是《论抽象与生活的等价关系及其在当代网络语境下的适用》，摘要里全是梗，笑死。',
-      '评论更绝：「建议发表在带专学报」「本文已被抽象人民出版社收录」，我直接一个大绷不住。',
-      '乐子分享完毕，勿cue。'
-    ]},
-    {a:'麦克阿瑟中士',lv:7,t:'孙吧等级锐评，快来看看你是哪一级',e:'1级啥话都敢说，6级开始魔怔…',tags:[['等级','']],rep:156,like:88,time:'10分钟前',c:[
-      '闲着没事做一期孙吧等级锐评，纯属娱乐，对号入座勿cue。',
-      'LV1-2初级粉丝：初生牛犊，啥话都敢说，看见梗就想复读，主打一个热情。',
-      'LV3-5正式会员：开始懂点规矩，知道「抽象≠生活」了，但偶尔还是绷不住。',
-      'LV6-7核心会员：开始魔怔，张口就是典中典，动不动就「我直接一个」.',
-      'LV8-9铁杆会员：老抽象了，玩梗信手拈来，分寸感拉满。',
-      'LV18荣耀元老：传说级，吧里活化石，看到他们的ID就是一种荣幸。',
-      '你到第几级了？评论区亮出来对线。'
-    ]}
-  ,
-    {a:'路过的吧友',lv:2,t:'刚看完抽象圣经，整个人都不好了',e:'五分钟不重样，这是人能说出来的话？',tags:[['新人',''],['考古','']],rep:8,like:3,time:'刚刚',c:['第一次看抽象圣经，全程嘴合不拢。','这是真人直播能说出来的？不愧是抽象天花板。','新世界的大门打开了，勿cue，我慢慢消化。']},
-    {a:'小萌新一枚',lv:1,t:'签到第一天，请问怎么快速融入孙吧？',e:'在线等，挺急的。',tags:[['新人','']],rep:15,like:6,time:'1分钟前',c:['今天刚签到，等级还是初级粉丝。','想问下吧友，是不是得多水贴才能升级？有没有什么技巧。','先给各位大佬磕一个，带带我。']},
-    {a:'路西法',lv:3,t:'这个「儒雅随和」到底怎么理解？',e:'字面意思肯定不是。',tags:[['求助','']],rep:22,like:11,time:'3分钟前',c:['看吧里天天说儒雅随和，但明明就是嘴臭ko对照。','这个梗是不是反讽？有没有老吧友给讲解一下。','在线等，勿cue。']},
-    {a:'水贴狂魔',lv:4,t:'每日打卡，今天也要抽象地生活',e:'签到+3，冲鸭。',tags:[['水贴','']],rep:33,like:14,time:'6分钟前',c:['抽象≠生活，但抽象=生活，懂得都懂。','每日一水，签到+3，等级慢慢涨。','孙吧日常，勿cue。']},
-    {a:'好奇宝宝',lv:2,t:'孙哥和邻居对喷那段在哪看？',e:'求个链接，谢谢。',tags:[['求助',''],['考古','']],rep:19,like:7,time:'9分钟前',c:['听说孙哥和邻居吵架那段是经典，想看原版。','「你吼辣么大声干什么嘛」「那你去找物管啊」太经典了。','有资源的大佬发一下，感谢。']}],
+    {a:'路过的吧友',lv:2,t:'刚看完抽象圣经，整个人都不好了',e:'五分钟不重样，这是人能说出来的话？',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E6%8A%BD%E8%B1%A1%E5%9C%A3%E7%BB%8F',rep:8,like:3,time:'刚刚',tags:[[['新人','']],[['考古','']]]},
+    {a:'小萌新一枚',lv:1,t:'签到第一天，请问怎么快速融入孙吧',e:'在线等，挺急的',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E6%96%B0%E4%BA%BA%20%E8%9E%8D%E5%85%A5%E5%AD%99%E5%90%A7',rep:15,like:6,time:'1分钟前',tags:[[['新人','']]]},
+    {a:'好奇宝宝',lv:3,t:'这个“儒雅随和”到底怎么理解？字面意思肯定不是',e:'看吧里天天说，明明就是嘴臭的反讽',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E5%84%92%E9%9B%85%E9%9A%8F%E5%92%8C',rep:22,like:11,time:'3分钟前',tags:[[['求助','']]]},
+    {a:'贴吧用户_GDyNKy1',lv:2,t:'我这个等级在孙吧算什么水平？在线求锐评',e:'1级小号，还处在新手村',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E7%AD%89%E7%BA%A7%20%E4%BB%80%E4%B9%88%E6%B0%B4%E5%B9%B3',rep:28,like:9,time:'5分钟前',tags:[[['求助','']]]},
+    {a:'热情的渡风',lv:3,t:'如何快速提高孙吧等级，在线等挺急的',e:'签到+2、回帖+3，有没有高效姿势',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E5%BF%AB%E9%80%9F%E5%8D%87%E7%BA%A7',rep:45,like:16,time:'8分钟前',tags:[[['求助','']]]},
+    {a:'麦克阿瑟中士',lv:7,t:'孙吧等级锐评：1级啥话都敢说，6级开始魔怔',e:'对号入座，勿cue',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E7%AD%89%E7%BA%A7%E9%94%90%E8%AF%84',rep:156,like:88,time:'10分钟前',tags:[[['等级','']]]},
+    {a:'眸迹真帅',lv:6,t:'分享一个今天看到的抽象乐子',e:'有人把抽象≠生活写成了论文格式',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E6%8A%BD%E8%B1%A1%E4%B9%90%E5%AD%90',rep:67,like:33,time:'15分钟前',tags:[[['乐子','']]]},
+    {a:'考古挖坟队',lv:12,t:'考古成功的来报到，这贴我三年前就看过',e:'经典永不过时，这就是孙吧的底蕴',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E8%80%83%E5%8F%A4',rep:207,like:120,time:'20分钟前',tags:[[['考古','']]]}
+  ],
   shipin:[
-    {a:'视频小编',lv:9,t:'【视频】孙哥经典直播名场面，高能预警',e:'建议戴好耳机观看。',tags:[['视频','video'],['经典','']],rep:892,like:1500,time:'1小时前',video:'🎬',c:[
-      '本期视频盘点孙哥经典直播名场面，高能预警，建议戴好耳机观看。',
-      '第一段：抽象圣经 original，五分钟不重样的即兴输出，感受一下什么叫「Show Time」。',
-      '第二段：邻里争执完整版，「你吼辣么大声干什么嘛」「那你去找物管啊」名场面全记录。',
-      '第三段：闪现名场面，一级团那句「你把你闪现给我交了」的原声出处。',
-      '温馨提示：玩梗可以，别把抽象话带进生活，我们下期再见。'
-    ]},
-    {a:'抽象TV',lv:10,t:'【视频】孙吧十年发展史纪录片（完整版）',e:'一口气看完孙吧的前世今生。',tags:[['视频','video']],rep:1203,like:2800,time:'昨天',video:'🎥',c:[
-      '耗时一周制作的孙吧十年发展史纪录片，一口气看完抽象文化的前世今生。',
-      '第一集：斗鱼抽象工作室时期，LOL直播里的言语冲突如何催生「嗨粉」文化。',
-      '第二集：抽象圣经与NMSL潮牌出圈，梗从直播间走向B站鬼畜区和贴吧。',
-      '第三集：「人人都是孙笑川」，抽象文化成为网络通用方言，也面临被误解和泛化的争议。',
-      '第四集：当下的孙吧，坚守分寸感，在玩梗与底线之间找平衡。',
-      '制作不易，觉得还行的吧友点个赞，勿cue。'
-    ]},
-    {a:'狗粉丝头子',lv:8,t:'【视频】孙哥语录配上BGM，效果拉满',e:'鬼畜区来的，勿cue。',tags:[['视频','video']],rep:334,like:620,time:'2天前',video:'🎵',c:[
-      '鬼畜区来的，把孙哥经典语录配上BGM，效果直接拉满。',
-      '曲目一：「儒雅随和」混音版，循环一整天都不腻。',
-      '曲目二：「你把你闪现给我交了」节奏向，卡点狂魔狂喜。',
-      '曲目三：「绷不住了」电音remix，戴上耳机就是一场抽象狂欢。',
-      '纯属娱乐，玩梗别过界，勿cue。'
-    ]}
-  ,
-    {a:'鬼畜区萌新',lv:6,t:'【视频】抽象圣经配《好运来》，效果爆炸',e:'戴上耳机直接升天。',tags:[['视频','video'],['鬼畜','']],rep:512,like:940,time:'20分钟前',video:'🎵',c:['把五分钟抽象圣经配上好运来BGM，卡点狂魔狂喜。','建议戴耳机，音量拉满，感受一下什么叫儒雅随和。','纯属娱乐，玩梗别过界，勿cue。']},
-    {a:'考古UP主',lv:10,t:'【视频】孙哥早年LOL直播名场面合集',e:'考古挖坟，绷不住了。',tags:[['视频','video'],['经典','']],rep:788,like:1600,time:'3小时前',video:'🎬',c:['翻出早年直播录像，一级团怒交闪现那句经典再现。','还有排位连跪怒骂队友「你是个锤子ADC」的完整版。','经典永不过时，看一次笑一次。']},
-    {a:'抽象TV',lv:9,t:'【视频】用AI还原孙哥年轻时的声音，太像了',e:'技术活，勿cue。',tags:[['视频','video']],rep:456,like:880,time:'昨天',video:'🎥',c:['用AI语音合成还原了孙哥的经典语录，相似度99%。','听到「我这个人其实非常儒雅随和」那一刻我直接绷不住。','技术分享，纯属娱乐。']},
-    {a:'搬运小能手',lv:7,t:'【视频】邻居对喷名场面完整版（带字幕）',e:'建议反复观看。',tags:[['视频','video'],['经典','']],rep:623,like:1200,time:'2天前',video:'🎬',c:['孙哥与邻居儒雅随和互动完整版，配字幕。','「你吼辣么大声干什么嘛」「那你去找物管啊」「你再骂？」全程高能。','节奏堪比相声，万能甩锅模板，收藏了。']}]
+    {a:'在下大阳',lv:10,t:'【动画】我的30岁：一小时看完催泪神贴',e:'UP主手绘简笔动画，看哭无数人',url:'https://www.bilibili.com/video/BV1h12SYEEQs/',rep:892,like:1500,time:'1小时前',tags:[[['视频','video']],[['神贴','']]]},
+    {a:'抽象TV',lv:10,t:'【视频】孙哥早年LOL直播名场面合集',e:'一级团怒交闪现，排位连跪怒骂队友',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=LOL%20%E7%9B%B4%E6%92%AD%20%E5%90%8D%E5%9C%BA%E9%9D%A2',rep:1203,like:2800,time:'昨天',tags:[[['视频','video']],[['经典','']]]},
+    {a:'鬼畜区萌新',lv:6,t:'【鬼畜】抽象圣经配《好运来》，效果爆炸',e:'戴上耳机直接升天',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E6%8A%BD%E8%B1%A1%E5%9C%A3%E7%BB%8F%20%E9%AC%BC%E7%95%9C',rep:512,like:940,time:'20分钟前',tags:[[['视频','video']],[['鬼畜','']]]},
+    {a:'搬运小能手',lv:7,t:'【视频】邻居对喷名场面完整版（带字幕）',e:'你吼辣么大声干什么嘛、那你去找物管啊',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E9%82%BB%E5%B1%85%20%E5%AF%B9%E5%96%B7',rep:623,like:1200,time:'2天前',tags:[[['视频','video']],[['经典','']]]},
+    {a:'技术 UP',lv:9,t:'【视频】用AI还原孙哥年轻时的声音',e:'听到那句儒雅随和我直接绷不住',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=AI%20%E8%BF%98%E5%8E%9F%20%E5%A3%B0%E9%9F%B3',rep:456,like:880,time:'昨天',tags:[[['视频','video']],[['技术','']]]},
+    {a:'考古UP主',lv:10,t:'【视频】流浪哥的一生：6天写尽一个时代',e:'配以老哥们的真实留言，泪目',url:'https://tieba.baidu.com/f/search/res?ie=utf-8&kw=%E5%AD%99%E7%AC%91%E5%B7%9D&qw=%E6%B5%81%E6%B5%AA%E5%93%A5',rep:788,like:1600,time:'3天前',tags:[[['视频','video']],[['神贴','']]]}
+  ]
 };
 var curTab='jinghua';
 function renderPosts(){
@@ -658,10 +553,11 @@ function renderPosts(){
     div.innerHTML='<div class="post-top"><div class="post-avatar">'+first+'</div><div class="post-author">'+esc(p.a)+'</div><span class="post-level">LV'+p.lv+'</span><span class="post-time">'+p.time+'</span></div>'+
       '<div class="post-title">'+esc(p.t)+'</div><div class="post-excerpt">'+esc(p.e)+'</div><div class="post-tags">'+tags+'</div>'+thumb+
       '<div class="post-foot"><span>💬 '+p.rep+' 回复</span><span>👍 '+p.like+'</span><span>官方推荐</span></div>';
-    div.onclick=function(){openPost(p);};
+    div.onclick=function(){window.open(p.url||'https://tieba.baidu.com/f?kw=%E5%AD%99%E7%AC%91%E5%B7%9D','_blank');};
     box.appendChild(div);
   });
 }
+function openBoard(name,url){window.open(url,'_blank');toast('已打开贴吧：「'+name+'」');}
 function switchTab(tab,el){
   curTab=tab; renderPosts();
   document.querySelectorAll('.cat-row .cat,.pc-tabs .tab').forEach(function(t){

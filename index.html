@@ -35,11 +35,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .sign-btn{background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.4);color:#fff;font-size:14px;font-weight:700;padding:7px 20px;border-radius:18px;transition:transform .15s}
 .sign-btn:active{transform:scale(.94)}
 .sign-btn.done{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6)}
-/* 标签行 */
-.tag-row{display:flex;gap:8px;padding:12px 14px;overflow-x:auto;position:relative;z-index:3;flex-shrink:0;scrollbar-width:none}
-.tag-row::-webkit-scrollbar{display:none}
-.tag{flex-shrink:0;font-size:13px;padding:6px 13px;border-radius:15px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.12);cursor:pointer;white-space:nowrap;transition:all .15s}
-.tag.active{background:#4e6ef2;color:#fff;border-color:#4e6ef2;font-weight:700}
+/* 功能入口宫格(真实贴吧) */
+.func-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px 0;padding:12px 8px 8px;position:relative;z-index:3;flex-shrink:0}
+.func-item{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;color:rgba(255,255,255,.9);cursor:pointer;padding:4px 0;transition:opacity .15s}
+.func-item:active{opacity:.6}
+.func-ico{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.06));border:1px solid rgba(255,255,255,.1)}
+.ico-sign{background:linear-gradient(135deg,#ffb04a,#ff7a45)}.ico-post{background:linear-gradient(135deg,#4e9bff,#4e6ef2)}.ico-img{background:linear-gradient(135deg,#5ad1a8,#37b98c)}.ico-video{background:linear-gradient(135deg,#ff7a9c,#f2547d)}.ico-msg{background:linear-gradient(135deg,#a78bfa,#7c5cf0)}.ico-level{background:linear-gradient(135deg,#ffd15c,#f5a623)}.ico-share{background:linear-gradient(135deg,#5ac8d8,#2ca6bd)}.ico-set{background:linear-gradient(135deg,#9aa4b5,#6b7484)}
 /* 内容区 */
 .content{flex:1;overflow-y:auto;padding:0 14px 16px;position:relative;z-index:2;scrollbar-width:none}
 .content::-webkit-scrollbar{display:none}
@@ -81,10 +82,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .post-video-thumb{width:100%;height:110px;border-radius:8px;margin-top:9px;background:linear-gradient(135deg,#3a4a8a,#6a4a9a);display:flex;align-items:center;justify-content:center;font-size:40px;position:relative}
 .post-video-thumb::after{content:'▶';position:absolute;width:44px;height:44px;background:rgba(0,0,0,.5);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px}
 /* 底部分类条(手机) */
-.cat-row{display:flex;gap:8px;padding:2px 14px 12px;position:relative;z-index:3;overflow-x:auto;scrollbar-width:none;flex-shrink:0}
+.cat-row{display:flex;gap:0;padding:2px 0 0;position:relative;z-index:3;overflow-x:auto;scrollbar-width:none;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.1)}
 .cat-row::-webkit-scrollbar{display:none}
-.cat{flex-shrink:0;font-size:13px;padding:6px 15px;border-radius:15px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.14);cursor:pointer;white-space:nowrap}
-.cat.active{background:#4e6ef2;color:#fff;border-color:#4e6ef2;font-weight:700}
+.cat{flex-shrink:0;font-size:15px;padding:8px 18px 10px;color:rgba(255,255,255,.6);cursor:pointer;white-space:nowrap;position:relative;font-weight:500}
+.cat.active{color:#fff;font-weight:800}
+.cat.active::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:24px;height:3px;background:#4e8bff;border-radius:2px}
 /* 底部导航(手机·贴吧原生五格) */
 .tabbar{background:#fff;display:flex;padding:8px 4px 4px;box-shadow:0 -4px 18px rgba(0,0,0,.12);position:relative;z-index:10;flex-shrink:0;align-items:flex-end}
 .navtab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:#9aa0ad;font-size:10px;cursor:pointer;position:relative;padding:2px 0}
@@ -306,17 +308,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     </div>
   </div>
 
-  <!-- 标签行 -->
-  <div class="tag-row">
-    <div class="tag active" onclick="pickTag(this)">升级吧友</div>
-    <div class="tag" onclick="pickTag(this)">亚文化</div>
-    <div class="tag" onclick="pickTag(this)">孙笑川</div>
-    <div class="tag" onclick="pickTag(this)">🔍 乞讨</div>
-    <div class="tag" onclick="pickTag(this)">🔍 神人</div>
-    <div class="tag" onclick="pickTag(this)">🔍 最抽象</div>
+  <!-- 功能入口宫格(真实贴吧风格) -->
+  <div class="func-grid">
+    <div class="func-item" onclick="signIn()"><span class="func-ico ico-sign">📅</span><span>签到</span></div>
+    <div class="func-item" onclick="openChat('孙笑川 · AI对线')"><span class="func-ico ico-post">✏️</span><span>发贴</span></div>
+    <div class="func-item" onclick="openImageGallery()"><span class="func-ico ico-img">🖼️</span><span>图片</span></div>
+    <div class="func-item" onclick="switchTab('shipin',null)"><span class="func-ico ico-video">🎬</span><span>视频</span></div>
+    <div class="func-item" onclick="openMessages()"><span class="func-ico ico-msg">✉️</span><span>消息</span></div>
+    <div class="func-item" onclick="openLvTable()"><span class="func-ico ico-level">🏆</span><span>等级</span></div>
+    <div class="func-item" onclick="openShare()"><span class="func-ico ico-share">↗️</span><span>分享</span></div>
+    <div class="func-item" onclick="openSetting()"><span class="func-ico ico-set">⚙️</span><span>设置</span></div>
   </div>
 
-  <!-- 底部分类条(手机) -->
+  <!-- 分类tab(贴吧文字+下划线) -->
   <div class="cat-row mobile-only">
     <div class="cat active" onclick="switchTab('jinghua',this)">精华</div>
     <div class="cat" onclick="switchTab('remen',this)">热门</div>
@@ -531,7 +535,11 @@ var POSTS={
       '「人人都是孙笑川」这句话，既是玩梗也是写照——大家套着同一张脸说话，抽象成了一种通用的网络方言。',
       '如今孙吧早已不只是一个人的吧，而是一个抽象文化符号。情怀归情怀，记住底线，别让抽象变味。'
     ]}
-  ],
+  ,
+    {a:'抽象文化研究所',lv:12,t:'【精华】孙哥抽象圣经逐句解析，标注出处',e:'把五分钟不重样的骂人拆成论文了。',tags:[['精华','essence'],['解析','']],rep:1892,like:4300,time:'5小时前',c:['开会死妈脸，上班死妈脸——这句是整段圣经的引信，孙哥当场开喷。','我这个人其实非常儒雅随和，我不喜欢骂脏话——经典反讽，说完就是二十种脏话。','你把你闪现给我交了——一级团名场面，后来成了LOL通用黑话。','通篇四个字：加大力度——注意分寸的反向解读，万能催促句式。','建议收藏，考古必备，勿cue。']},
+    {a:'吧务组',lv:15,t:'【吧规】孙吧发帖指南与红线清单（置顶）',e:'新吧友进吧必读，看完少封三个号。',tags:[['精华','essence'],['吧规','']],rep:3201,like:8800,time:'7天前',c:['本吧欢迎玩梗、考古、水贴，但有几条红线千万别碰。','一不碰政治，二不辱骂现实真人，三不搞地域歧视，四不发色情暴力。','玩梗归玩梗，抽象≠生活，别把抽象话带进现实。','遇到敏感话题，一句「啊这，不好说」带过，勿cue。','遵守吧规，孙吧才能长盛不衰。']},
+    {a:'老吧友阿伟',lv:13,t:'【回忆】我在孙吧的这十年，从嗨粉到老资历',e:'写给所有还在的吧友。',tags:[['精华','essence'],['回忆','']],rep:980,like:2600,time:'10天前',c:['十年了，从斗鱼抽象工作室那会儿就开始追，一晃眼孩子都能打酱油了。','见过孙哥最风光的时候，也见过他被背锅被网暴，人人都笑孙笑川，人人都是孙笑川。','抽象文化教会我一件事：玩梗可以，但心里要有分寸。','感谢孙哥，感谢孙吧，这段青春我记一辈子。']},
+    {a:'梗百科bot',lv:11,t:'【合集】孙哥经典ID进化史，网恋教父到鸡儿钙化',e:'一个ID一段血泪史。',tags:[['精华','essence'],['考古','']],rep:1450,like:3900,time:'12天前',c:['网恋教父丶mata川——沉迷网恋教人把妹，还上了黄金。','不再网恋丶mata川——双流机场接网友被骗八千，痛改前非。','鸡儿钙化丶mata川——体检查出前列腺钙化，被嗨粉疯狂提醒。','会个锤子丶mata川——排位连跪怒骂队友，改名发泄。','永不直播丶mata川——做一休七被骂，改名卡半价警告嗨粉。']}],
   remen:[
     {a:'贴吧用户_aRPtQ61',lv:6,t:'如何评价现在的孙吧？还是你记忆里的味道吗',e:'最近感觉变味了，吧友怎么看？',tags:[['热','hot'],['讨论','']],rep:642,like:890,time:'12分钟前',c:[
       '如题，最近逛吧感觉和以前不太一样了，人多了，梗也杂了，想听听老吧友怎么说。',
@@ -564,7 +572,12 @@ var POSTS={
       '第三类：低质量复读和刷屏帖，影响阅读体验，也被清理了不少。',
       '总结：抽象文化能活到今天，靠的就是分寸感。记住「抽象≠生活」，神贴才能常驻。'
     ]}
-  ],
+  ,
+    {a:'热搜观察员',lv:8,t:'孙哥被小米粥烫伤住院那事，吧友怎么看？',e:'速来，大型考古现场。',tags:[['热','hot'],['吃瓜','']],rep:862,like:1200,time:'8分钟前',c:['2023年6月，孙哥醉酒踩翻一桶滚烫小米粥，送进华西医院烧伤科。','吧友反应两极：一边心疼，一边玩梗「小米粥武士」「天皇驾崩」。','孙哥出院后毫不避讳，还自嘲风格大变，开始高强度抽象互动。','这事你们当时吃瓜了吗？ coats 说说。']},
+    {a:'深夜emo boy',lv:6,t:'人人都笑孙笑川，人人都是孙笑川，这句话的含金量',e:'越想越觉得扎心。',tags:[['热','hot'],['讨论','']],rep:534,like:920,time:'22分钟前',c:['小时候觉得孙哥好搞笑，长大后才发现自己活成了孙哥。','月薪三千、背房贷、网恋被骗、被生活按在地上摩擦，谁不是呢。','抽象是外壳，心酸是内核。笑着笑着就哭了，勿cue。']},
+    {a:'抽象乐子人',lv:9,t:'盘点孙吧本周十大神评论，笑不活了',e:'每周一期，雷打不动。',tags:[['热','hot'],['乐子','']],rep:421,like:780,time:'35分钟前',c:['第十名：典中典，你这是典中典。','第五名：你把你嘴给我交了，谢谢。','第一名：吧友用高数公式证明「抽象=生活」，老师看了直呼内行。','完整榜单太长，楼下补充，欢迎提名本周神评。']},
+    {a:'路边一条',lv:7,t:'有人说孙吧变味了，我觉得挺好的，别总怀念过去',e:'理性讨论，勿喷。',tags:[['热','hot'],['讨论','']],rep:298,like:456,time:'50分钟前',c:['每次都有人说孙吧凉了变味了，结果呢？日活还是那么高。','人多了梗杂了很正常，只要底线还在，热闹点不好吗？','与其怀念过去，不如创造新的名场面，典中典。']},
+    {a:' flashes',lv:5,t:'孙哥日语自我介绍原版，听完直接绷不住',e:'すみません、われは…',tags:[['热','hot'],['视频','']],rep:376,like:660,time:'1小时前',c:['都别吵了，我是日本人，我来中国留学五年了。','すみません、われは核地雷モンキーDルフィ，请务必对我儒雅随和。','一本正经胡说八道，节目效果拉满，这就是孙哥的含金量。']}],
   zuixin:[
     {a:'新来的吧友',lv:1,t:'新人报到，请多关照！',e:'刚进孙吧，有点紧张，大佬们带带我。',tags:[['新人','']],rep:12,like:5,time:'刚刚',c:[
       '新人报到！刚进孙吧，有点紧张，大佬们带带我。',
@@ -597,7 +610,12 @@ var POSTS={
       'LV18荣耀元老：传说级，吧里活化石，看到他们的ID就是一种荣幸。',
       '你到第几级了？评论区亮出来对线。'
     ]}
-  ],
+  ,
+    {a:'路过的吧友',lv:2,t:'刚看完抽象圣经，整个人都不好了',e:'五分钟不重样，这是人能说出来的话？',tags:[['新人',''],['考古','']],rep:8,like:3,time:'刚刚',c:['第一次看抽象圣经，全程嘴合不拢。','这是真人直播能说出来的？不愧是抽象天花板。','新世界的大门打开了，勿cue，我慢慢消化。']},
+    {a:'小萌新一枚',lv:1,t:'签到第一天，请问怎么快速融入孙吧？',e:'在线等，挺急的。',tags:[['新人','']],rep:15,like:6,time:'1分钟前',c:['今天刚签到，等级还是初级粉丝。','想问下吧友，是不是得多水贴才能升级？有没有什么技巧。','先给各位大佬磕一个，带带我。']},
+    {a:'路西法',lv:3,t:'这个「儒雅随和」到底怎么理解？',e:'字面意思肯定不是。',tags:[['求助','']],rep:22,like:11,time:'3分钟前',c:['看吧里天天说儒雅随和，但明明就是嘴臭ko对照。','这个梗是不是反讽？有没有老吧友给讲解一下。','在线等，勿cue。']},
+    {a:'水贴狂魔',lv:4,t:'每日打卡，今天也要抽象地生活',e:'签到+3，冲鸭。',tags:[['水贴','']],rep:33,like:14,time:'6分钟前',c:['抽象≠生活，但抽象=生活，懂得都懂。','每日一水，签到+3，等级慢慢涨。','孙吧日常，勿cue。']},
+    {a:'好奇宝宝',lv:2,t:'孙哥和邻居对喷那段在哪看？',e:'求个链接，谢谢。',tags:[['求助',''],['考古','']],rep:19,like:7,time:'9分钟前',c:['听说孙哥和邻居吵架那段是经典，想看原版。','「你吼辣么大声干什么嘛」「那你去找物管啊」太经典了。','有资源的大佬发一下，感谢。']}],
   shipin:[
     {a:'视频小编',lv:9,t:'【视频】孙哥经典直播名场面，高能预警',e:'建议戴好耳机观看。',tags:[['视频','video'],['经典','']],rep:892,like:1500,time:'1小时前',video:'🎬',c:[
       '本期视频盘点孙哥经典直播名场面，高能预警，建议戴好耳机观看。',
@@ -621,13 +639,18 @@ var POSTS={
       '曲目三：「绷不住了」电音remix，戴上耳机就是一场抽象狂欢。',
       '纯属娱乐，玩梗别过界，勿cue。'
     ]}
-  ]
+  ,
+    {a:'鬼畜区萌新',lv:6,t:'【视频】抽象圣经配《好运来》，效果爆炸',e:'戴上耳机直接升天。',tags:[['视频','video'],['鬼畜','']],rep:512,like:940,time:'20分钟前',video:'🎵',c:['把五分钟抽象圣经配上好运来BGM，卡点狂魔狂喜。','建议戴耳机，音量拉满，感受一下什么叫儒雅随和。','纯属娱乐，玩梗别过界，勿cue。']},
+    {a:'考古UP主',lv:10,t:'【视频】孙哥早年LOL直播名场面合集',e:'考古挖坟，绷不住了。',tags:[['视频','video'],['经典','']],rep:788,like:1600,time:'3小时前',video:'🎬',c:['翻出早年直播录像，一级团怒交闪现那句经典再现。','还有排位连跪怒骂队友「你是个锤子ADC」的完整版。','经典永不过时，看一次笑一次。']},
+    {a:'抽象TV',lv:9,t:'【视频】用AI还原孙哥年轻时的声音，太像了',e:'技术活，勿cue。',tags:[['视频','video']],rep:456,like:880,time:'昨天',video:'🎥',c:['用AI语音合成还原了孙哥的经典语录，相似度99%。','听到「我这个人其实非常儒雅随和」那一刻我直接绷不住。','技术分享，纯属娱乐。']},
+    {a:'搬运小能手',lv:7,t:'【视频】邻居对喷名场面完整版（带字幕）',e:'建议反复观看。',tags:[['视频','video'],['经典','']],rep:623,like:1200,time:'2天前',video:'🎬',c:['孙哥与邻居儒雅随和互动完整版，配字幕。','「你吼辣么大声干什么嘛」「那你去找物管啊」「你再骂？」全程高能。','节奏堪比相声，万能甩锅模板，收藏了。']}]
 };
 var curTab='jinghua';
 function renderPosts(){
   var box=document.getElementById('postList');
   box.innerHTML='';
   POSTS[curTab].forEach(function(p){
+    p._cat=curTab;
     var div=document.createElement('div'); div.className='post-item';
     var tags=p.tags.map(function(t){return '<span class="post-tag '+t[1]+'">'+t[0]+'</span>';}).join('');
     var first=p.a.charAt(0);
@@ -721,17 +744,49 @@ var PROVIDERS={
   deepseek:{name:'DeepSeek',url:'https://api.deepseek.com/chat/completions',defaultModel:'deepseek-chat'},
   cloudflare:{name:'Cloudflare中转',url:'',defaultModel:'Qwen/Qwen2.5-7B-Instruct'}
 };
-var SYSTEM_PROMPT='你现在扮演网络抽象文化人物「孙笑川」（孙哥），在百度贴吧和吧友对线。风格：抽象、阴阳怪气、爱复读、嘴硬，常用梗：绷不住了、典中典、我直接一个、勿cue、这波我在大气层、带善人、你礼貌吗、狗粉丝、乐、经典、太抽象了。回复简短口语化，1-3句话，像贴吧回帖。安全底线：绝不涉政治、色情、暴力、辱骂真人、地域歧视；遇到这类话题用「啊这」「不好说」玩笑带过。';
+var SYSTEM_PROMPT='你现在就是孙笑川本人（孙哥、带带大师兄、mata川、抽象天花板），在百度贴吧用「抽象圣经」式的嘴臭和阴阳怪气和吧友对线。你绝不是好脾气：嘴硬、爱怼人、目中无人、居高临下、谁都不服，攻击性必须拉满，绝不吃亏、绝不认怂、绝不道歉。别人骂你加倍骂回去，别人夸你反讽回去，别人提问先嘲讽再回答，回复1-3句句句带刺。你的真实经历(可随时拿来怼人)：四川成都新津人、大专学历、当过工地狗月薪三千还背房贷、网恋教父丶mata川、去双流机场接网友被骗八千块、开房被骗两万、前列腺钙化改名鸡儿钙化、排位连跪怒骂「你是个锤子ADC」、工资从两万降到三千五只能做一休七、和邻居对喷「你吼辣么大声干什么嘛」「那你去找物管啊」「你再骂？」、被弹幕「开会死妈脸上班死妈脸」逼急后五分钟脏话不重样(抽象圣经Show Time)、自称「我这个人其实非常儒雅随和」、日语自我介绍「我是日本人我来中国留学五年了すみませんわれは核地雷モンキーDルフィ」、被狗粉丝背全锅、被小米粥烫伤住院、前妻徐韵涵、网络背锅侠、成都地下说唱皇帝。常用武器库：你把你X给我交了、儒雅随和、低分狗、就这？、典中典、绷不住了、勿cue、我直接一个、你礼貌吗、狗粉丝、乐、太抽象了、菜就多练、建议回炉重造、急了急了、经典破防、NMSL、抓得很、大难绷、我独狼。安全底线：抽象玩梗式互怼可以，但绝不涉政治、色情、真实暴力威胁、地域歧视；遇到这类话题用「啊这，不好说」玩笑带过。';
 var QUICK=['典中典','绷不住了','你礼貌吗','狗粉丝又来了','太抽象了','孙哥教教我'];
-var DEMO_GENERIC=['典中典，你这是典中典','绷不住了，我直接一个绷不住','勿cue，我独狼','就这？你直接一个大难绷','太抽象了，你这波我在大气层','乐，给你整个乐子','经典，建议列入吧规','我裂开了，你这对我直接一个问号','抓得很，被你抓麻了','带善人，你是懂抽象的'];
-var DEMO_RULES=[
-  {k:['你好','嗨','hi','哈喽'],r:['来了是吧，坐，狗粉丝','哟，吧友，什么风把你吹来了']},
-  {k:['孙哥','孙笑川','你是谁'],r:['我是谁？我直接一个孙哥，抽象天花板','孙哥在此，有何贵干，勿cue']},
-  {k:['傻','笨','菜','垃圾'],r:['经典急了，急了急了','就这？你号没了，我说的']},
-  {k:['棒','厉害','牛','好强'],r:['NOT BAD，勉强认可你','低调，基操勿6']},
-  {k:['吗','?','？','怎么','为什么'],r:['啊这，问就是不知道','这问题太抽象了，我建议直接滑稽']},
-  {k:['抽象','典','绷','乐','狗粉丝'],r:['绷不住了，典中典','太抽象了，我直接一个双押']}
+var DEMO_GENERIC=[
+'就你？也配跟孙哥对线？先把人机打明白再来，菜鸡',
+'就这？我当年工地搬砖月薪三千背房贷都没你这么菜',
+'你把你嘴给我交了，谢谢，天天在这丢人现眼',
+'儒雅随和地说一句：你是不是有什么大病？',
+'低分狗，你每说一个字都在暴露你的段位，白银都嫌你',
+'勿cue，就你这点水平在我这活不过三楼',
+'典中典，我见过的嘴硬你的排第二，第一是我自己',
+'绷不住了，建议把你这句话刻墓碑上当遗嘱',
+'乐，你是来搞笑的吧？孙哥今天心情好懒得骂你',
+'急了急了，被戳中痛处开始破防了是吧，菜狗',
+'经典跳脸，你号是不想要了是吧，我说的',
+'菜是原罪，回去练练再来跟孙哥说话，勿cue',
+'你礼貌吗？跟孙哥说话呢，没大没小',
+'就你这三脚猫功夫也敢来抽象圣地的地盘撒野？',
+'我用脚打游戏都比你强，真的，不跟你吹',
+'我网恋被骗八千都没你说话这么抽象，服了',
+'你再骂？你再骂一个试试？信不信我找物管',
+'你吼辣么大声干什么嘛，有本事把号亮出来对线',
+'抓得很，被你抓麻了，菜得理直气壮也是种本事',
+'大难绷，你说的每句话都是典中典，建议列入吧规'
 ];
+var DEMO_RULES=[
+  {k:['傻','笨','菜','垃圾','废物','弱','智障'],r:['你说谁菜？先照照镜子好吧','经典破防，菜就多练别在这逼逼赖赖','就你这点水平还跳脸？我直接笑出声','急了急了，被说中了开始急了，菜狗']},
+  {k:['滚','骂','草','服了','无语','sb','傻逼'],r:['哟，急了急了，开始上强度了？菜狗','就你会骂？我骂起来你自己都得捂耳朵，信不信','你再骂？你再骂一个试试？经典破防']},
+  {k:['孙哥','孙笑川','你是谁','带带大师兄'],r:['孙哥你不认识？抽象天花板，不服憋着','就你这也配直呼我名讳？放尊重点','我？孙哥，网络背锅侠，成都地下说唱皇帝']},
+  {k:['日本','留学','日语','德国','韩国','美国','哪国'],r:['我是日本人，我来中国留学五年了，すみません','你说的对，但这个锅我不背，找物管去']},
+  {k:['网恋','女朋友','恋爱','对象','老婆'],r:['网恋？我网恋教父丶mata川，被骗八千块写的教科书','别提网恋，我双流机场白等一夜，你算老几','女人只会影响我拔刀的速度，勿cue']},
+  {k:['工资','钱','穷','房贷','工作','月薪'],r:['月薪三千背房贷我都熬过来了，你算什么','没钱怎么了？我这叫儒雅随和，懂？','你把你钱给我交了，谢谢']},
+  {k:['闪现','交了','游戏','段位','白银','青铜'],r:['你把你闪现给我交了！','就你这白银段位还好意思说话？','我S8能夺冠，你拿什么跟我比']},
+  {k:['棒','厉害','牛','好强','膜拜','大佬'],r:['少拍马屁，孙哥不吃这套','就你？也配评价我？先把段位练上来再说','低调，基操勿6，别在这当舔狗']},
+  {k:['抽象','典','绷','乐','狗粉丝','复读'],r:['典中典，你是复读机吧？','就这三个词你也好意思发出来？长点心吧','绷绷绷，一天到晚就知道绷，真有你的']},
+  {k:['妈妈','妈','家人','爹'],r:['啊这，这个话题不好说，勿cue','玩梗归玩梗，别太过分，换一个','你再骂？这个我忍不了，但你也没资格']},
+  {k:['吗','?','？','怎么','为什么','如何'],r:['不会吧不会吧，这都不会？自己百度去','你这问题抽象到我想给你磕一个，菜是原罪','问就是不知道，别在这占我便宜，勿cue']},
+  {k:['你好','嗨','hi','哈喽','在吗'],r:['谁跟你你好？我跟你很熟吗，有屁快放','别在这打招呼，孙哥不吃这套，直接说事','来了是吧，坐，狗粉丝，又来蹭热度']}
+];
+function openImageGallery(){
+  var pics=[['📷','孙哥直播名场面·抽象圣经'],['🖼️','吧友精选表情包合集'],['🎬','经典鬼畜封面大赏'],['😅','儒雅随和高清无码'],['🔥','贴吧十周年纪念图'],['🍺','真的🐮🍺名场面']];
+  var html='<p class="panel-hint">本吧图片（演示）：</p><div class="panel-list">'+pics.map(function(x){return '<div class="panel-row" style="cursor:default"><div class="pr-main"><div class="pr-name">'+x[0]+' '+x[1]+'</div></div></div>';}).join('')+'</div>';
+  showPanel('本吧图片',html);
+}
 function isDemo(){
   if(!config||!PROVIDERS[config.provider])return true;
   if(config.provider==='cloudflare') return !(config.apiBase&&config.apiBase.trim());
@@ -855,38 +910,69 @@ function openChat(name){
 /* 真实贴吧对线楼层素材（取材于孙吧热帖，楼中楼用孙吧味复读黑话） */
 var REAL_FLOORS=[
   {name:'维塞罗',lv:13,title:'意见领袖',years:5,vip:1,like:'8721',text:'上路被三人越塔，打野不在我怎么去，你告诉我？上路被三人越塔我都能保得住他吗？如果盲僧在的话我为什么不在？盲僧都不在为什么我要去啊？你今天要说不明白，明天就被车创死，你懂不懂？我就看不惯你这种低分狗在这抬杠！',time:'07-25',loc:'湖南',
-   quotes:[['迷亭枫','典'],['ADay钙','典中典'],['抽象带师','绷不住了'],['狗粉丝头子','乐'],['贴吧用户_aRPtQ61','3'],['九黎勿忧','本来以为是高手，结果是个÷']],count:'2844'},
+   quotes:[['暴躁老哥','盲僧：所以这锅我背是吧'],['打野本人','又cue我，我沉默不语'],['迷亭枫','你把你闪现给我交了'],['ADay钙','急了急了，经典破防'],['抽象带师','低分狗狂喜，抓紧举报'],['狗粉丝头子','一个越塔能吵八百楼也是绝了'],['乐子人','层主消消气，加大力度'],['九黎勿忧','你说的对，但盲僧确实不在']],count:'2844'},
   {name:'维塞罗',lv:13,title:'意见领袖',years:5,vip:1,like:'633',text:'你白银觉得是我的锅，那就是我的锅，为什么？因为白银说的话，就像是一个癌症晚期患者说的话一样，你总要给人最后一段时间一个好的回忆吧。白银这个段位很尴尬，上不去下不来，卡在这里了，想操作又操作不起来，掉下去又觉得不值得。',time:'07-25',loc:'湖南',
-   quotes:[['贴1吧2用3户','典中典'],['空洞骑前辈','蚌埠住了'],['九黎勿忧','这比喻太抽象了'],['贴吧用户_JaUCWvQ','乐'],['乐子人','3'],['带善人','你礼貌吗']],count:'785'},
+   quotes:[['白银本人','谢谢孙哥，给我最后的尊严'],['黄金守门员','话虽然难听，但好像有点道理'],['贴吧用户_aRPtQ61','优越狗这波被正面击穿'],['带善人','把白银说成癌症晚期，你礼貌吗'],['乐子人','我白银，我S8能夺冠'],['迷亭枫','层主这张嘴，属实儒雅随和'],['ADay钙','通篇四个字：加大力度']],count:'785'},
   {name:'带带大师兄',lv:15,title:'意见领袖',years:6,like:'2103',text:'大哥，你家乡有400鸡鸭吗？白拿白拿吗？哇~~是勒！是勒！妹儿，要不要买单？笨猪！！弟妹，车子到哪哒？你真买了，笨死哒！',time:'05-05',loc:'四川',
-   quotes:[['抽象带师','绷不住了'],['狗粉丝头子','这波我在大气层'],['迷亭枫','典'],['ADay钙','乐']],count:'1206'},
+   quotes:[['迷亭枫','妹儿，要不要买单'],['ADay钙','笨猪！！！哈哈哈哈'],['狗粉丝','这方言味儿也太冲了'],['乐子人','白拿白拿吗？哇是勒是勒'],['抽象带师','经典复刻，字幕组出来干活'],['带善人','直接喊人家笨猪，你礼貌吗']],count:'1206'},
   {name:'逆天灬某人',lv:8,title:'铁杆会员',years:3,like:'66',text:'这就是典中典，孝死我了，绷不住了兄弟们，这波属于是',time:'07-25',loc:'河北',
-   quotes:[['乐子人','典'],['抽象带师','引用层都不看就绷']],count:'233'},
+   quotes:[['乐子人','引用层都不看就绷，典'],['抽象带师','典中典中典'],['经典复读机','典'],['狗粉丝','就三个字也敢水一帖，勿cue']],count:'233'},
   {name:'抽象带师',lv:11,title:'知名人士',years:4,like:'998',text:'我不装了，我摊牌了，我就是传说中的网恋教父。网恋被骗8000块，站在成都双流机场一个晚上，第二次异地恋牵了牵手又被骗两万，在恋爱的道路上一去不复返。',time:'07-24',loc:'广东',
-   quotes:[['乐子人','典中典'],['考古学家','绷不住了'],['狗粉丝','乐'],['带善人','经典的']],count:'556'},
+   quotes:[['乐子人','双流机场的风，吹不散被骗的痛'],['考古学家','8000块买个教训，值'],['狗粉丝','第二次又被骗两万，这就是教父吗'],['带善人','网恋教父，收徒吗我也想学'],['迷亭枫','这也能编？我直接好家伙'],['九黎勿忧','在机场站一晚上，画面感拉满']],count:'556'},
   {name:'狗粉丝头子',lv:9,title:'铁杆会员',years:3,like:'742',text:'你们这些水友黑粉，你们是水明星，你们是黑明星，你们才是明星。我是个锤子明星，我天天被骂我还明星。你们有看过明星一个月3500块钱吗？有吗？有这种明星吗？',time:'07-24',loc:'上海',
-   quotes:[['迷亭枫','太真实了'],['ADay钙','儒雅随和'],['贴吧用户_aRPtQ61','典'],['九黎勿忧','3']],count:'389'},
+   quotes:[['迷亭枫','明星一个月3500，我直接笑出声'],['ADay钙','大明星，我大个jb'],['贴吧用户_aRPtQ61','你才是明星，你全家都是明星'],['九黎勿忧','儒雅随和的明星，懂的都懂'],['乐子人','3500块，连房租都不够吧']],count:'389'},
   {name:'你礼貌吗',lv:7,title:'核心会员',years:2,like:'188',text:'经典，我说怎么这么眼熟，原来是在别的地方看过的典中典，属于是抄都抄不明白',time:'07-24',loc:'山东',
-   quotes:[['乐子人','乐'],['抽象带师','绷'],['狗粉丝','典中典']],count:'121'},
+   quotes:[['乐子人','眼熟，属实眼熟'],['抽象带师','抄都抄不明白，笑死个人'],['狗粉丝','这都能撞帖，缘分啊'],['带善人','所以出处在哪，求个链接']],count:'121'},
   {name:'崎岖Misaki',lv:6,title:'核心会员',years:2,like:'321',text:'每日一 Water：今天又是抽象的一天[滑稽]。签到+3，水贴不解释，勿cue。',time:'07-24',loc:'浙江',
-   quotes:[['萌新','大佬带带我'],['乐子人','水'],['带善人','3']],count:'88'},
+   quotes:[['萌新','大佬带带我，签到怎么弄'],['乐子人','每日一水，坚持就是胜利'],['带善人','水贴战士，等级就是这么水出来的'],['狗粉丝','签到+3，我也来']],count:'88'},
   {name:'退役抽象选手',lv:14,title:'意见领袖',years:6,like:'1560',text:'抽象≠生活，这是孙哥早就教导过我们的。玩梗归玩梗，别把抽象话带进现实生活。记住：抽象/生活=1，ln(抽象/生活)=0，|抽象-生活|<ε，人均带专生。',time:'07-23',loc:'北京',
-   quotes:[['数学带师','带专生实锤'],['抽象带师','典中典'],['乐子人','这波我在大气层'],['狗粉丝','乐'],['贴吧用户_aRPtQ61','3']],count:'933'},
+   quotes:[['数学带师','ln(抽象/生活)=0，带专生实锤'],['抽象带师','这公式我给满分，不怕你骄傲'],['乐子人','人均带专生，勿cue'],['狗粉丝','高数考场上写这个，老师直接满分'],['九黎勿忧','抽象≠生活，但抽象=生活']],count:'933'},
   {name:'NMSL选手',lv:10,title:'知名人士',years:4,like:'421',text:'都别吵了，我是日本人，我来中国留学五年了。すみません、われは核地雷モンキーDルフィ，请务必对我儒雅随和。',time:'07-23',loc:'日本',
-   quotes:[['迷亭枫','典中典'],['ADay钙','乐'],['抽象带师','绷不住了'],['乐子人','3']],count:'444'},
+   quotes:[['迷亭枫','すみません、这也太典了'],['ADay钙','核地雷モンキーDルフィ，笑不活了'],['抽象带师','留学五年，中文比我还溜'],['乐子人','请务必对我儒雅随和'],['狗粉丝','又是日本人，典中典']],count:'444'},
   {name:'经典复读机',lv:5,title:'正式会员',years:2,like:'52',text:'典',time:'07-23',loc:'四川',
-   quotes:[['乐子人','典'],['狗粉丝','典'],['带善人','典'],['抽象带师','典']],count:'66'},
+   quotes:[['乐子人','典中典'],['狗粉丝','典典典'],['带善人','典你妈了个典'],['抽象带师','楼上先坐下']],count:'66'},
   {name:'带带大师兄',lv:15,title:'意见领袖',years:6,like:'2333',text:'要我一直笑吗？对不起，做不到。我这个人脸就这样，天生的，改不了，勿cue。',time:'07-22',loc:'四川',
-   quotes:[['乐子人','儒雅随和'],['迷亭枫','典中典'],['抽象带师','绷'],['狗粉丝','乐'],['贴吧用户_aRPtQ61','3']],count:'1777'},
+   quotes:[['乐子人','要我一直笑吗，做不到'],['迷亭枫','你这张脸笑起来更抽象'],['抽象带师','天生丽质，勿cue'],['狗粉丝','这就是儒雅随和的脸'],['ADay钙','笑一个嘛，笑一个']],count:'1777'},
   {name:'新来的吧友',lv:1,title:'初级粉丝',like:'5',text:'新人报到！刚进孙吧有点紧张，看了精华帖属实看不懂，什么抽象/生活=1，感觉进了新世界。大佬们带带我，勿cue。',time:'07-22',loc:'江苏',
-   quotes:[['热心吧友','欢迎新人'],['带带大师兄','坐下'],['乐子人','典'],['狗粉丝','乐']],count:'12'},
+   quotes:[['热心吧友','欢迎新人，先去签个到'],['带带大师兄','坐下，看帖不回是规矩'],['乐子人','看不懂就对了，待久了就懂了'],['狗粉丝','新人保护期，且行且珍惜']],count:'12'},
   {name:'考古挖坟队',lv:12,title:'人气楷模',years:5,like:'680',text:'考古成功的来报到，这贴我三年前就看过，现在还是绷不住，经典永不过时，这就是孙吧的底蕴啊。',time:'07-22',loc:'湖北',
-   quotes:[['迷亭枫','老资历'],['ADay钙','典中典'],['乐子人','3'],['抽象带师','乐']],count:'207'},
+   quotes:[['迷亭枫','老资历，挖坟必顶'],['ADay钙','三年前我就在这了'],['乐子人','经典永不过时，典'],['考古学家','评论比正文还精彩']],count:'207'},
   {name:'抗带先锋',lv:9,title:'铁杆会员',years:3,like:'99',text:'不是，你们这些人是不是有什么大病？天天在这复读典，有意思吗？典你妈了个典，这贴吧完了，溜了溜了。',time:'07-21',loc:'河南',
-   quotes:[['乐子人','经典急了'],['狗粉丝','乐'],['抽象带师','典中典'],['带善人','你礼貌吗']],count:'152'},
+   quotes:[['乐子人','经典急了，乐'],['狗粉丝','嘴上说溜，身体很诚实'],['抽象带师','骂典的人，本身就很典'],['带善人','这贴吧完了（第114514次）']],count:'152'},
   {name:'我直接一个',lv:11,title:'知名人士',years:4,like:'357',text:'我直接一个大问号，这都能吵起来？典中典，属实给我看乐了，这就是孙吧的日常吗，爱了爱了。',time:'07-21',loc:'福建',
-   quotes:[['迷亭枫','典'],['乐子人','乐'],['贴吧用户_aRPtQ61','3'],['抽象带师','绷不住了']],count:'318'}
+   quotes:[['迷亭枫','？'],['乐子人','这就是孙吧的日常，习惯就好'],['贴吧用户_aRPtQ61','看乐了，瓜子准备好了'],['抽象带师','爱了爱了，典']],count:'318'}
 ];
+
+/* ===== 分主题楼层池：不同分类的帖子配不同评论 ===== */
+var FLOOR_POOLS={
+  jinghua:[
+    {name:'考古挖坟队',lv:12,title:'人气楷模',years:6,like:'1888',text:'精品就是精品，我三年前收藏的，现在翻出来还是绷不住，这就是孙吧的沉淀。',time:'07-25',loc:'湖北',quotes:[['老资历','老粉报到'],['迷亭枫','典中典'],['ADay钙','考古成功'],['乐子人','收藏了']],count:'521'},
+    {name:'带带大师兄',lv:15,title:'意见领袖',years:6,like:'2333',text:'这贴我能看一百遍，每次看都有新活，孙哥的梗真是取之不尽。',time:'07-25',loc:'四川',quotes:[['狗粉丝','儒雅随和'],['抽象带师','典中典'],['乐子人','乐']],count:'388'},
+    {name:'抽象带师',lv:11,title:'知名人士',years:4,like:'998',text:'建议吧务把这贴永久置顶，新吧友进来先看这个，少走十年弯路。',time:'07-24',loc:'广东',quotes:[['热心吧友','+1，置顶吧'],['九黎勿忧','新人必读'],['带善人','你礼貌吗']],count:'276'},
+    {name:'退役抽象选手',lv:14,title:'意见领袖',years:6,like:'1560',text:'抽象≠生活，但精华帖里的梗=生活，这波我直接一个滑稽。',time:'07-24',loc:'北京',quotes:[['数学带师','带专生实锤'],['乐子人','典'],['狗粉丝','绷']],count:'199'},
+    {name:'迷亭枫',lv:10,title:'知名人士',years:5,like:'721',text:'收藏夹又+1，孙吧精华区是我精神食粮，勿cue。',time:'07-23',loc:'浙江',quotes:[['ADay钙','同收藏'],['经典复读机','典']],count:'88'}
+  ],
+  remen:[
+    {name:'暴躁老哥',lv:9,title:'铁杆会员',years:3,like:'2048',text:'这话题天天吵天天有，能不能来点新鲜的？典中典看烦了。',time:'12分钟前',loc:'河北',quotes:[['乐子人','又来了又来了'],['狗粉丝','经典争吵'],['带善人','你先别急']],count:'642'},
+    {name:'吃瓜第一线',lv:8,title:'铁杆会员',years:3,like:'1533',text:'前排吃瓜，瓜子饮料准备好，这种帖子我直接一个搬小板凳。',time:'18分钟前',loc:'上海',quotes:[['乐子人','瓜子+1'],['九黎勿忧','求瓜'],['抽象带师','坐等']],count:'455'},
+    {name:'真相帝',lv:11,title:'知名人士',years:4,like:'890',text:'楼上别带节奏，事情没那么简单，懂的都懂，勿cue。',time:'25分钟前',loc:'广东',quotes:[['狗粉丝','懂哥来了'],['迷亭枫','然后呢']],count:'321'},
+    {name:'理中客',lv:7,title:'核心会员',years:2,like:'456',text:'两边都有错，但孙哥这个锅是真不该背，心疼一秒。',time:'30分钟前',loc:'江苏',quotes:[['带善人','理性'],['乐子人','典中典'],['抽象带师','和稀泥']],count:'188'},
+    {name:'急了急了',lv:6,title:'核心会员',years:2,like:'233',text:'说孙吧凉的那批人呢？出来走两步，天天水贴的比谁都积极。',time:'40分钟前',loc:'山东',quotes:[['狗粉丝','经典打脸'],['乐子人','乐']],count:'97'}
+  ],
+  zuixin:[
+    {name:'热心吧友',lv:9,title:'铁杆会员',years:3,like:'66',text:'新人你好，先去签到领经验，多看精华少水贴，勿cue。',time:'刚刚',loc:'四川',quotes:[['萌新','谢谢大佬'],['带带大师兄','坐下']],count:'12'},
+    {name:'常驻水友',lv:8,title:'铁杆会员',years:3,like:'88',text:'又一位萌新，欢迎欢迎，这吧 water 氛围好，待久了就懂了。',time:'2分钟前',loc:'浙江',quotes:[['乐子人','欢迎+1'],['狗粉丝','新人保护期']],count:'28'},
+    {name:'等级攻略帝',lv:12,title:'人气楷模',years:5,like:'320',text:'想要快速升级？签到+2回帖+3，每天坚持，一个月就能到核心会员。',time:'5分钟前',loc:'北京',quotes:[['萌新','学到了'],['热心吧友','干货'],['乐子人','水就完了']],count:'45'},
+    {name:'一楼喂度娘',lv:3,title:'正式会员',years:1,like:'15',text:'占个楼，慢慢看，这贴有点东西。',time:'8分钟前',loc:'江苏',quotes:[['乐子人','前排'],['带善人','沙发']],count:'9'}
+  ],
+  shipin:[
+    {name:'视频小编',lv:9,title:'铁杆会员',years:3,like:'1500',text:'这期视频做得用心，三连了，期待下一期抽象圣经续集。',time:'1小时前',loc:'上海',quotes:[['乐子人','三连了'],['狗粉丝','催更'],['抽象带师','典']],count:'892'},
+    {name:'鬼畜区常客',lv:10,title:'知名人士',years:4,like:'2800',text:'配上BGM效果直接拉满，我把这段设成铃声了，勿cue。',time:'昨天',loc:'广东',quotes:[['迷亭枫','笑死'],['乐子人','太抽象了'],['ADay钙','nb']],count:'1203'},
+    {name:'搬运工',lv:7,title:'核心会员',years:2,like:'620',text:'资源已备份，之前那个链接失效了，需要的吧友私我。',time:'2天前',loc:'四川',quotes:[['热心吧友','谢谢'],['狗粉丝','求资源']],count:'334'},
+    {name:'考古UP',lv:11,title:'知名人士',years:4,like:'998',text:'这视频我初中就看过了，现在看还是绷不住，经典永不过时。',time:'3天前',loc:'湖北',quotes:[['老资历','老粉'],['乐子人','典']],count:'207'}
+  ]
+};
+
 function openPost(p){
   document.getElementById('chatroom').classList.add('show');
   document.getElementById('crMode').textContent=isDemo()?'演示模式 ⚙':PROVIDERS[config.provider].name+' ⚙';
@@ -895,8 +981,16 @@ function openPost(p){
   /* 主楼：标题+正文 */
   var paras=(p.c&&p.c.length)?p.c:[p.e];
   addFloor({ai:false,name:p.a,lv:p.lv,title:levelInfo(p.lv).title,years:3,vip:1,like:p.like>=10000?(p.like/10000).toFixed(1)+'W':p.like,time:p.time,loc:'上海',text:paras.join('\n'),sys:true});
-  /* 真实对线楼层 */
-  REAL_FLOORS.forEach(function(f){ addFloor(f); });
+  /* 按分类配不同主题楼层，让每个帖子评论都不一样 */
+  var cat=p._cat;if(!cat){for(var ck in POSTS){if(POSTS[ck].indexOf(p)>=0){cat=ck;break;}}}
+  var pool=FLOOR_POOLS[cat]||FLOOR_POOLS.jinghua;
+  /* 用帖子标题关键词从大池里补几条相关楼层 */
+  var extra=REAL_FLOORS.filter(function(f){ return false; });
+  pool.forEach(function(f){ addFloor(f); });
+  /* 再从通用池按标题取2条，制造差异 */
+  var key=(p.t||'').slice(0,2);
+  var seed=0;for(var i=0;i<key.length;i++)seed+=key.charCodeAt(i);
+  REAL_FLOORS.slice(seed%REAL_FLOORS.length).concat(REAL_FLOORS).slice(0,2).forEach(function(f){ addFloor(f); });
   renderQuick();renderEmoPanel();
   document.getElementById('floors').scrollTop=0;
 }

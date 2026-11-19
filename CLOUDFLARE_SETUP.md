@@ -5,12 +5,14 @@
 | 项目 | 值 |
 |---|---|
 | 网站 | https://1394641925.github.io/sunxiaochuan/ |
-| Worker 地址 | `https://sunxiaochuan-ai.sunxiaochuan666.workers.dev` |
+| 默认接入 | **浏览器直连硅基流动** `https://api.siliconflow.cn/v1/chat/completions` |
 | 模型 | `THUDM/GLM-4-9B-0414`（硅基流动，输入/输出均 ¥0，免费） |
-| 默认口令 | `sunxiaochuan666` |
+| 备用 Worker | `https://sunxiaochuan-ai.sunxiaochuan666.workers.dev`（藏 Key 方案，国内可能被污染） |
 | 额度 | 走孙哥的免费 Key，访客直接用，不花访客的钱 |
 
 **默认效果**：任何人打开网站 → 点悬浮球对线，直接就是真 AI，不需要任何配置。
+
+> **为什么默认直连而不是 Worker 中转？** `workers.dev` 域名在中国大陆常被 DNS 污染（解析到 Facebook 的 IP），导致网页连不上 Worker。而硅基流动 API 在国内可正常直连、且支持浏览器跨域（`Access-Control-Allow-Origin: *`），更稳。代价是 Key 写在前端——但这是**免费模型**，刷也刷不出钱，交作业完全够用。想藏 Key 可切到 Cloudflare 中转模式。
 
 ---
 

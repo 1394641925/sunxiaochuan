@@ -5,14 +5,15 @@
 | 项目 | 值 |
 |---|---|
 | 网站 | https://1394641925.github.io/sunxiaochuan/ |
-| 默认接入 | **浏览器直连硅基流动** `https://api.siliconflow.cn/v1/chat/completions` |
+| 默认接入 | **Cloudflare Pages 中转** `https://xcs-ai.pages.dev/` |
 | 模型 | `THUDM/GLM-4-9B-0414`（硅基流动，输入/输出均 ¥0，免费） |
-| 备用 Worker | `https://sunxiaochuan-ai.sunxiaochuan666.workers.dev`（藏 Key 方案，国内可能被污染） |
-| 额度 | 走孙哥的免费 Key，访客直接用，不花访客的钱 |
+| 中转域名（正在用） | `https://xcs-ai.pages.dev/`（Cloudflare Pages，pages.dev 国内不污染，Key 藏服务端） |
+| 额度 | 走孙哥的免费 Key（藏在 Pages 服务端），访客直接用，不花访客的钱 |
+| Key 安全 | 前端已无任何明文 Key，查看源码也拿不到 |
 
 **默认效果**：任何人打开网站 → 点悬浮球对线，直接就是真 AI，不需要任何配置。
 
-> **为什么默认直连而不是 Worker 中转？** `workers.dev` 域名在中国大陆常被 DNS 污染（解析到 Facebook 的 IP），导致网页连不上 Worker。而硅基流动 API 在国内可正常直连、且支持浏览器跨域（`Access-Control-Allow-Origin: *`），更稳。代价是 Key 写在前端——但这是**免费模型**，刷也刷不出钱，交作业完全够用。想藏 Key 可切到 Cloudflare 中转模式。
+> **为什么用 pages.dev 而不是 workers.dev？** `workers.dev` 在中国大陆被 DNS 污染（解析到 Facebook 的 IP），网页连不上。而 `pages.dev` 解析到 Cloudflare 真实 IP，国内可正常访问。所以用 Cloudflare Pages Functions（`_worker.js`）承载中转逻辑，Key 藏在服务端，前端彻底没有明文 Key，既不污染又不泄露。
 
 ---
 

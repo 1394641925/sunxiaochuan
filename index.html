@@ -1150,7 +1150,7 @@ function gcTapDelete(bubble,m){
   if(gcAdmin){pass=gcAdminPass;}
   if(!confirm('确定撤回这条消息？'))return;
   fetch(GC_API+'/api/chat/delete',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({room:gcRoom,id:m.id,pass:pass})}).then(function(r){return r.json();}).then(function(d){
+    body:JSON.stringify({room:gcRoom,id:m.id,pass:pass,uid:gcUid()})}).then(function(r){return r.json();}).then(function(d){
       if(d.ok){bubble.classList.add('deleted');bubble.textContent='该消息已被撤回';bubble.onclick=null;toast('已撤回');}
       else if(!mine&&d.error){gcAdminPass='';gcAdmin=false;document.getElementById('gAdminBtn').style.color='#888';toast(d.error||'口令错误');}
       else toast(d.error||'撤回失败');

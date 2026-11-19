@@ -1,124 +1,68 @@
-# Cloudflare Worker 中转部署教程（真 AI + Key 不泄露）
+# 孙笑川 AI · 部署与双模式说明
 
-把 API Key 藏在 Cloudflare Worker 里，网页只连 Worker，不接触真 Key。别人拿到你的网址也刷不了你的额度（还能加口令双保险）。全程免费，10 分钟搞定。
+## 当前线上状态（已部署完成 ✅）
 
-## 原理一句话
+| 项目 | 值 |
+|---|---|
+| 网站 | https://1394641925.github.io/sunxiaochuan/ |
+| Worker 地址 | `https://sunxiaochuan-ai.sunxiaochuan666.workers.dev` |
+| 模型 | `THUDM/GLM-4-9B-0414`（硅基流动，输入/输出均 ¥0，免费） |
+| 默认口令 | `sunxiaochuan666` |
+| 额度 | 走孙哥的免费 Key，访客直接用，不花访客的钱 |
 
-```
-访客网页 → Cloudflare Worker（藏 Key + 验口令）→ 硅基流动/DeepSeek
-```
-
-Key 只写在 Worker 里，访客看不到；Worker 地址是公开的，但你可以设一道口令，没口令的人用不了。
-
----
-
-## 第一步：注册 Cloudflare
-
-1. 打开 https://dash.cloudflare.com/sign-up ，用邮箱注册（免费）。
-2. 进入控制台后，左侧点 **Workers 和 Pages** → **Worker** → **创建 Worker**。
-3. 名字随便填，比如 `sun-bot`，点部署。
+**默认效果**：任何人打开网站 → 点悬浮球对线，直接就是真 AI，不需要任何配置。
 
 ---
 
-## 第二步：粘贴 Worker 代码
+## 双模式：访客可选自带 Key
 
-创建后点 **编辑代码**，把里面所有内容删掉，粘贴下面这段：
+网站聊天室顶部有「孙哥的AI ⚙」按钮，点开可切换：
 
-```js
-// ===== 在这里填你的配置 =====
-const API_KEY = 'sk-你的真实Key';                       // 硅基流动的 Key
-const UPSTREAM = 'https://api.siliconflow.cn/v1/chat/completions'; // 上游地址
-const ACCESS_PASS = 'sunxiaochuan666';                  // 访问口令，改成你自己的
-const MODEL = 'Qwen/Qwen2.5-7B-Instruct';               // 免费模型
-// ============================
+1. **孙哥的免费 AI（默认）**：什么都不用填，走内置 Worker + 免费模型。
+2. **自带 Key 直连**：接入方式选「硅基流动」或「DeepSeek」，填自己的 Key，走自己的额度（免口令）。
+3. **自带 Key 走中转**：接入方式保持默认，只在「自带 API Key」里填自己的 Key，会透传给 Worker 覆盖默认值，同样走自己额度、免口令。
+4. **演示模式**：接入方式选「演示模式」，离线词库兜底，不联网也能聊。
 
-export default {
-  async fetch(request) {
-    // 只允许跨域从你的网站访问
-    const cors = {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, X-Access-Pass'
-    };
-    if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
-    if (request.method !== 'POST') return new Response('Only POST', { status: 405, headers: cors });
-
-    // 校验口令：前端配置里填的口令要和后面对上
-    if (ACCESS_PASS && request.headers.get('X-Access-Pass') !== ACCESS_PASS) {
-      return new Response(JSON.stringify({ error: { message: '口令错误，勿cue' } }), {
-        status: 403, headers: { ...cors, 'Content-Type': 'application/json' }
-      });
-    }
-
-    let body;
-    try { body = await request.json(); } catch (e) {
-      return new Response(JSON.stringify({ error: { message: '请求格式错误' } }), {
-        status: 400, headers: { ...cors, 'Content-Type': 'application/json' }
-      });
-    }
-    // 强制使用 Worker 里指定的模型，防止别人拿你的 Key 跑贵模型
-    body.model = MODEL;
-
-    const upstream = await fetch(UPSTREAM, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + API_KEY
-      },
-      body: JSON.stringify(body)
-    });
-    const text = await upstream.text();
-    return new Response(text, { status: upstream.status, headers: { ...cors, 'Content-Type': 'application/json' } });
-  }
-};
-```
-
-改完这 4 个变量：
-- `API_KEY`：你的真实 Key（硅基流动申请：https://cloud.siliconflow.cn → 账户管理 → API 密钥，有免费额度）。
-- `ACCESS_PASS`：访问口令，自己随便设一串，网页里要填一样的。
-- `UPSTREAM` / `MODEL`：用 DeepSeek 就改成 `https://api.deepseek.com/chat/completions` 和 `deepseek-chat`（DeepSeek 是收费的，注意余额）。
-
-点右上角 **部署 (Deploy)**。
+配置随时可点「恢复默认」一键回到孙哥的免费 AI。
 
 ---
 
-## 第三步：拿到 Worker 地址
-
-部署后，顶部会显示你的 Worker 网址，形如：
+## 原理
 
 ```
-https://sun-bot.你的子域名.workers.dev
+默认：访客网页 → Worker（藏 Key + 验口令）→ 硅基流动免费模型
+自带Key：访客网页 → Worker（透传自带Key，免口令）→ 硅基流动
+直连：  访客网页 → 硅基流动/DeepSeek（浏览器直连自己的Key）
 ```
 
-复制这个地址。
+Key 不写在网页前端，默认 Key 只存在 Worker 里；访客看不到真 Key。自带 Key 由访客自己在配置框填写，存在其浏览器 localStorage。
 
 ---
 
-## 第四步：网页里配置
+## 自己重新部署 Worker（可选）
 
-1. 打开你的网站 → 点右下角孙笑川悬浮球 → 顶部「演示模式 ⚙」进入配置。
-2. 接入方式选 **Cloudflare Worker（中转）**。
-3. API 地址：粘贴刚才的 Worker 地址。
-4. 访问口令：填 Worker 代码里 `ACCESS_PASS` 的值。
-5. API Key：**留空**（Key 在 Worker 里，网页不需要）。
-6. 模型：留空（Worker 里已强制指定）。
-7. 保存。看到「已切换真 AI」就成了，直接对线测试。
+如果哪天 Key 失效或想换模型，按下面来：
+
+1. 打开 https://dash.cloudflare.com → Workers 和 Pages → 创建 Worker。
+2. 编辑代码，全选删掉，粘贴仓库里的 `worker.js` 完整内容。
+3. 改开头三个变量：`API_KEY`（硅基流动 Key）、`ACCESS_PASS`（口令）、`MODEL`（模型 ID）。
+4. 点部署，复制形如 `https://xxx.xxx.workers.dev` 的地址。
+5. 网站配置里把「API 地址」换成新地址、口令填一样的即可。
+
+> 模型 ID 去硅基流动「模型广场」搜，选标价为 `¥0.000000` 的免费模型，复制它的模型 ID（形如 `THUDM/GLM-4-9B-0414`）。注意：价格详情里 `free-text-model.online.output-tokens` 那串是**计费项代码**，不是模型 ID，别复制错。
 
 ---
 
-## 关于安全（回答你担心的盗刷）
+## 安全说明
 
-- **Key 写死在网页里**：任何人按 F12 都能看到，必被盗刷。❌
-- **Key 放 Worker + 口令**：访客只看到 Worker 地址和口令，看不到 Key。就算有人拿到网址，没口令也调不动；有口令的人也只能用你指定的免费模型，跑不了贵模型。✅
-- 万一口令泄露：去 Worker 里改 `ACCESS_PASS` 重新部署即可，Key 完全不用动。
-
-> 口令是要发给演示对象的（比如老师），属于「自己人」范围。真正面向公网的产品还要加限流、域名白名单，但交作业这个级别，口令已经足够。
+- 默认 Key 藏在 Worker，前端看不到；就算有人拿到 Worker 地址，口令错误也调不动。
+- Worker 强制指定模型 + `max_tokens=512` 限制，别人拿不到贵模型。
+- 口令属于发给演示对象的「自己人」范围；真要面向公网还需加限流/域名白名单，交作业这个级别够用。
+- 自带 Key 的访客走自己额度，不消耗孙哥的免费额度。
 
 ---
 
 ## 免费额度参考
 
-- 硅基流动：注册送额度，Qwen2.5-7B-Instruct 等小模型长期免费，交作业绰绰有余。
+- 硅基流动：`THUDM/GLM-4-9B-0414` 等模型当前输入/输出均免费，交作业绰绰有余。
 - Cloudflare Worker：免费版每天 10 万次请求，作业场景用不完。
-
-两个都免费，不用绑卡（Cloudflare 注册可能会让你填卡，但免费版不扣钱，也可以跳过）。

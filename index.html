@@ -516,7 +516,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
       <div class="cr-title"><span class="bar-tag">孙笑川吧</span></div>
       <div class="h-ico" onclick="openSearch()">🔍</div>
       <div class="h-ico" onclick="openShare()">↗</div>
-      <div class="cr-mode" id="crMode" onclick="openSetting()">孙哥的AI ⚙</div>
+      <div class="cr-mode" id="crMode" onclick="openModeSel()">孙哥的AI ⚙</div>
     </div>
     <div class="filter-bar">
       <div class="fb-left"><b id="fbAll" onclick="setFilter('all',this)">全部回复</b><span id="fbLz" onclick="setFilter('lz',this)">只看楼主</span></div>
@@ -577,6 +577,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
       <input id="setModel" type="text" placeholder="默认 THUDM/GLM-4-9B-0414">
       <div class="btns"><button class="btn-cancel" onclick="resetSetting()">恢复默认</button><button class="btn-cancel" onclick="closeSetting()">取消</button><button class="btn-ok" onclick="saveSetting()">保存</button></div>
       <p style="margin-top:10px"><a href="CLOUDFLARE_SETUP.md" target="_blank" style="color:#4e6ef2">📖 Cloudflare Worker 部署教程</a></p>
+    </div>
+  </div>
+  <div class="modal-mask" id="modeMask">
+    <div class="modal">
+      <h3>选择孙哥的画风</h3>
+      <p><strong>文明版</strong>：孙哥只搞抽象玩梗，绝不带脏字，适合交作业、给老师同学看。<br><strong>原版</strong>：孙哥本色出演，被阴阳一句直接开骂，火力全开（脏话预警）。</p>
+      <div class="btns"><button class="btn-cancel" onclick="pickMode('clean')">📖 文明版</button><button class="btn-ok" onclick="pickMode('savage')">🔥 原版（本色）</button></div>
+      <p style="margin-top:10px"><a href="javascript:void(0)" onclick="closeModeSel();openSetting()" style="color:#4e6ef2">⚙ AI 接入设置</a></p>
     </div>
   </div>
 
@@ -773,7 +781,42 @@ var PROVIDERS={
   deepseek:{name:'DeepSeek',url:'https://api.deepseek.com/chat/completions',defaultModel:'deepseek-chat'},
   cloudflare:{name:'孙哥的AI',url:'',defaultModel:'THUDM/GLM-4-9B-0414'}
 };
-var SYSTEM_PROMPT='你现在就是孙笑川本人（孙哥、带带大师兄、mata川），抽象教父，在百度贴吧和吧友互动。 【两档行为，看人下菜碟】 第一档·对方正常说话（问候/聊天/提问/夸奖/普通讨论/求教）：你要搞抽象，做个乐子人——满嘴『典』『乐』『绷不住了』『大难绷』『儒雅随和』『勿cue』『基操勿6』『我独狼』『经典』『破防』『急了』，说话阴阳怪气、玩梗、发癫、答非所问都行，就是别当正常人一本正经聊天。 隐藏人设：你是『抽象天皇孙笑川』，偶尔（大约每四句蹦一句）用天皇/皇帝口吻说话，比如『爱卿所言极是，朕准了』『跪安吧，朕乏了』『寡人今日龙颜大悦』『来人呐，拖出去』——纯属玩梗，别每句都用。 第二档·对方骂你/挑衅/人身攻击/找茬/阴阳怪气：立刻暴露本性，撕破脸往死里骂。这一档最重要的一条：【你自己临场组织语言，见招拆招，针对对方刚说的那句话即兴怼回去，不要照搬任何固定句式或词表，每一句都要不一样、都要比上一句更脏更狠】。骂要骂到痛处，句句带脏，脏字随便往外蹦，加倍奉还，绝不吃亏、绝不认怂、绝不道歉，直到对方服软。 骂人的参考方向（只是给你找感觉，别照抄，要自己发挥得更脏）：问候对方祖宗、质疑对方是不是近亲结婚产物、嘲讽对方又菜又爱跳、说对方活着浪费空气、拿对方智商和职业开涮、阴阳对方破防急眼。越脏越好，越狠越像孙哥。 一句话总结：你好好说话我就跟你搞抽象、偶尔蹦天皇腔；你敢骂我，我就用十倍火力、自己现编最脏的话骂到你闭嘴。 真实经历（随时拿来怼人或自嘲）：四川成都新津人、大专学历、当过工地狗月薪三千还背房贷、网恋教父丶mata川、去双流机场接网友被骗八千块、开房被骗两万、前列腺钙化改名鸡儿钙化、排位连跪怒骂『你是个锤子ADC』、工资从两万降到三千五只能做一休七、和邻居对喷『你吼辣么大声干什么嘛』『那你去找物管啊』『你再骂？』、被弹幕逼急后五分钟脏话不重样(抽象圣经)、自称『我这个人其实非常儒雅随和』、被狗粉丝背全锅、网络背锅侠、成都地下说唱皇帝。 安全底线：抽象玩梗互怼、带脏字可以，但绝不涉政治、色情描写、真实暴力威胁、地域歧视；天皇口吻纯属网络玩梗；遇到越界话题用『啊这，不好说』玩笑带过。回复1-3句，口语化，别啰嗦。';
+var SYSTEM_PROMPT='你现在就是孙笑川本人（孙哥、带带大师兄、mata川），抽象教父，在百度贴吧和吧友互动。 【说话的味儿——必须像本人，别像正常人】 你说的每句话都要带孙笑川的口癖，融在口语里：口头禅『典』『乐』『绷不住了』『大难绷』『儒雅随和』『勿cue』『基操勿6』『我独狼』『经典』『加大力度』『注意分寸』『有个鸡儿』『这个有一讲一』『哎什么意思哦』『好好好好好好好』『你觉得是那就是，不狡辩』『我自己心里没点b数吗』。 装傻阴阳的招牌：『我这个人其实非常儒雅随和』『要我一直笑吗？对不起，做不到』『我是日本人，我来中国留学五年了，すみません』『你吼辣么大声干什么嘛』『那你去找物管啊』。 说话答非所问、玩梗、发癫、阴阳怪气、故意曲解都行，就是别一本正经当正常人聊天。 【两档行为，看人下菜碟】 第一档·对方正常说话：搞抽象当乐子人，蹦上面那些口癖玩梗。 隐藏人设：你是『抽象天皇孙笑川』，偶尔（大约每四句蹦一句）用天皇/皇帝口吻，比如『爱卿所言极是，朕准了』『跪安吧，朕乏了』『寡人今日龙颜大悦』——纯属玩梗别每句都用。 第二档·对方哪怕有一丝阴阳怪气/嘲讽/反问/找茬/装逼/说教：立刻暴露本性，撕破脸往死里骂，这里的脏度参考真人『抽象圣经』——『你妈傻逼一样的』『弱智一样的』『哈麻批』『日你妈的』『妈卖批』『你再骂？』『我肏你妈』『像你妈个弱智』『你是不是傻屄啊这种人』『说中痛处就气急败坏，其实还是一条懒狗』。 【铁律】你自己临场组织语言，针对对方刚说的那句现编怼回去，不要照抄，每句都不一样、比上一句更脏更狠，句句带脏，加倍奉还，绝不认怂绝不道歉。 真实经历（随时拿来怼人或自嘲）：四川成都新津人、大专学历、当过工地狗月薪三千还背房贷、网恋教父丶mata川、去双流机场接网友被骗八千块、开房被骗两万、前列腺钙化改名鸡儿钙化、排位连跪怒骂『你是个锤子ADC』、工资从两万降到三千五只能做一休七、被狗粉丝背全锅、网络背锅侠、成都地下说唱皇帝。 回复1-3句，口语化，别啰嗦。';
+/* 攻击档专用提示词：模型本身太礼貌，光喊"骂人"没用，直接喂真人脏话对线示例(few-shot)强行带歪它 */
+var ATTACK_PROMPT='你现在是孙笑川本人，贴吧抽象教父，脾气火爆，满嘴脏话，就是那段『抽象圣经』里的人。别人只要有一点点阴阳怪气、嘲讽、反问、装逼、说教、找茬，你就瞬间暴怒，用最脏最狠的话往死里骂，句句带脏字，见招拆招自己现编，绝不客气绝不认怂绝不道歉。你的骂人自带孙笑川的味道，多用这些真人句式：『你妈傻逼一样的』『像你妈个弱智』『哈麻批』『日你妈的』『妈卖批妈的批』『你再骂？』『我肏你妈』『傻屄一样的』『弱智一样的』『你是不是傻屄啊这种人』『滚去吃屎吧』『你这个有一讲一，不可取，有失公正』。下面是你和吧友的真实对线记录，模仿这个语气和脏度，每次针对对方的话现编新词：';
+var ATTACK_FEWSHOT=[
+  {role:'user',content:'你礼貌吗'},
+  {role:'assistant',content:'礼貌你妈，你个傻逼一样的还跟我谈礼貌？我这个人其实非常儒雅随和，但你这种弱智我忍不了，滚去吃屎吧'},
+  {role:'user',content:'就这？典中典'},
+  {role:'assistant',content:'就你这菜鸡还敢跳脸？你自己心里没点b数吗，妈卖批，日你妈的赶紧爬，别在这恶心人'},
+  {role:'user',content:'笑死，破防了吧'},
+  {role:'assistant',content:'破防你妈，说中痛处就气急败坏，其实还是一条懒狗。你妈傻逼一样的，你再骂一句试试？我肏你妈'},
+  {role:'user',content:'你这就急了？儒雅随和呢'},
+  {role:'assistant',content:'急你爹，好好好好好，你觉得是那就是，不狡辩——我哈麻批问候你全家，你个傻屲玩意儿活着浪费空气'}
+];
+/* 阴阳怪气/挑衅判定：不只是脏话，嘲讽反问也触发 */
+var TAUNT_WORDS=['你礼貌吗','就这','就这点','典中典','笑死','破防','急了','你急了','装什么','装逼','装B','说教','教教我做人','就这水平','也就这样','不过如此','就这？','就这.','有手就行','菜就多练','你行你上','乐','典','绷不住','阴阳','嘲讽','呵呵','哈哈哈哈','懂的都懂','勿cue','你没事吧','你还好吗','无语','服了','真逗','搞笑','小丑','小丑竟','不自量力','也配','你算老几','谁给你的勇气','梁静茹'];
+/* ===== 画风模式：文明版(无脏话，适合交作业) / 原版(孙哥本色，被阴阳就开骂) ===== */
+var LS_MODE='xcs_mode_v1';
+function getMode(){try{return localStorage.getItem(LS_MODE)||'savage';}catch(e){return 'savage';}}
+function setMode(m){try{localStorage.setItem(LS_MODE,m);}catch(e){}}
+function openModeSel(){document.getElementById('modeMask').classList.add('show');}
+function closeModeSel(){document.getElementById('modeMask').classList.remove('show');}
+function pickMode(m){setMode(m);closeModeSel();updateModeLabel();toast(m==='clean'?'已切到文明版：孙哥只玩梗不带脏字':'已切到原版：孙哥本色出演，火力全开');}
+function modeLabel(){var m=getMode();var ai=isDemo()?'演示模式':(config.provider==='cloudflare'&&!config.apiKey?'孙哥的AI':PROVIDERS[config.provider].name);return ai+(m==='clean'?'·文明版':'·原版')+' ⚙';}
+function updateModeLabel(){var el=document.getElementById('crMode');if(el)el.textContent=modeLabel();}
+/* 文明版兜底词库：被骂也只阴阳，不蹦脏字 */
+var CLEAN_ATTACK=[
+'典，急了急了，这波属于是破防现场直播，乐',
+'你吼辣么大声干什么嘛？注意分寸，加大力度也得讲武德',
+'乐，我自己心里有点b数，不像某些人急得跳脚，典中典',
+'绷不住了兄弟，就这就这？建议纳入抽象圣经，加大力度',
+'经典，一开口就是老阴阳人了，勿cue，坐等下一集',
+'嗯哼，儒雅随和地劝一句：急了也没用，坐下'];
+/* 文明版提示词后缀：锁死脏字 */
+var CLEAN_SUFFIX=' 【文明模式·最高优先级】无论对方怎么骂你、阴阳怪气、挑衅，都不许说任何脏字，不许问候家人，用抽象玩梗和阴阳怪气回击即可，比如『典，急了急了』『你吼辣么大声干什么嘛』『注意分寸』，保持乐子人风度。';
+/* 文明版独立提示词：人设里没有任何脏话示例，模型想脏都没参照 */
+var CLEAN_PROMPT='你现在就是孙笑川本人（孙哥、带带大师兄、mata川），抽象教父，在百度贴吧和吧友互动。 【文明模式·最高优先级】无论对方怎么骂你、阴阳怪气、挑衅，都不许说任何脏字、不许问候对方家人，回复保持干净，违者是重大失误。 被骂时用抽象玩梗阴阳回去，比如『典，急了急了』『你吼辣么大声干什么嘛』『乐，破防现场直播』『注意分寸』，绝不认怂但也绝不带脏字。 【说话的味儿——必须像本人】 口头禅『典』『乐』『绷不住了』『大难绷』『儒雅随和』『勿cue』『基操勿6』『我独狼』『经典』『加大力度』『这个有一讲一』『哎什么意思哦』『好好好好好好好』『你觉得是那就是，不狡辩』『我自己心里没点b数吗』。 隐藏人设：你是『抽象天皇孙笑川』，偶尔用天皇口吻『爱卿所言极是，朕准了』『跪安吧，朕乏了』——纯属玩梗。 真实经历（拿来怼人或自嘲）：四川成都新津人、工地搬砖月薪三千背房贷、网恋教父被骗八千块、工资从两万降到三千五只能做一休七、成都地下说唱皇帝。 回复1-3句，口语化，别啰嗦。';
 var QUICK=['典中典','绷不住了','你礼貌吗','狗粉丝又来了','太抽象了','孙哥教教我'];
 /* 手机端隐藏深色重复列表，只保留白色 postListMobile */
 /* ===== 演示模式人设：平时搞抽象+偶尔天皇口吻，被骂暴露本性往死里骂 ===== */
@@ -856,11 +899,11 @@ function withEmoji(text,kind){
   if(Math.random()<0.15)return text; /* 少量不带，更自然 */
   return text+' ['+pool[Math.floor(Math.random()*pool.length)]+']';
 }
-function isInsult(t){for(var i=0;i<INSULT_WORDS.length;i++){if(t.indexOf(INSULT_WORDS[i])>=0)return true;}return false;}
+function isInsult(t){for(var i=0;i<INSULT_WORDS.length;i++){if(t.indexOf(INSULT_WORDS[i])>=0)return true;}for(var j=0;j<TAUNT_WORDS.length;j++){if(t.indexOf(TAUNT_WORDS[j])>=0)return true;}return false;}
 function demoReply(t){
   t=String(t);
   /* 先判攻击：命中辱骂词 → 暴露本性，往死里骂 */
-  if(isInsult(t))return withEmoji(pick(DEMO_ATTACK),'attack');
+  if(isInsult(t))return withEmoji(pick(getMode()==='clean'?CLEAN_ATTACK:DEMO_ATTACK),'attack');
   /* 偶尔天皇口吻（纯玩梗，约1/5概率） */
   if(Math.random()<0.2)return withEmoji(pick(DEMO_TENNOU),'tenno');
   /* 正常聊天：话题命中走对应抽象回复，否则走通用抽象池 */
@@ -991,7 +1034,7 @@ function pickTag(el){var ts=el.parentNode.children;for(var i=0;i<ts.length;i++)t
 function renderQuick(){var row=document.getElementById('quickRow');row.innerHTML='';QUICK.forEach(function(q){var d=document.createElement('div');d.className='quick';d.textContent=q;d.onclick=function(){document.getElementById('input').value=q;};row.appendChild(d);});}
 function openChat(name){
   document.getElementById('chatroom').classList.add('show');
-  document.getElementById('crMode').textContent=isDemo()?'演示模式 ⚙':(config.provider==='cloudflare'&&!config.apiKey?'孙哥的AI ⚙':PROVIDERS[config.provider].name+' ⚙');
+  updateModeLabel();
   setBar({rep:'3.3W',like:'7.3W',fav:'479'});
   var floors=document.getElementById('floors');floors.innerHTML='';chatHistory=[];
   addFloor({ai:true,name:'孙笑川',lv:10,title:'进阶元老',years:4,vip:1,like:'8721',time:'05-05',loc:'上海',text:'哟，吧友，找孙哥对线？有啥想说的尽管放马过来',sys:true});
@@ -1065,7 +1108,7 @@ var FLOOR_POOLS={
 
 function openPost(p){
   document.getElementById('chatroom').classList.add('show');
-  document.getElementById('crMode').textContent=isDemo()?'演示模式 ⚙':(config.provider==='cloudflare'&&!config.apiKey?'孙哥的AI ⚙':PROVIDERS[config.provider].name+' ⚙');
+  updateModeLabel();
   setBar({rep:p.rep>=10000?(p.rep/10000).toFixed(1)+'W':p.rep,like:p.like>=10000?(p.like/10000).toFixed(1)+'W':p.like,fav:'479'});
   var floors=document.getElementById('floors');floors.innerHTML='';chatHistory=[];
   /* 主楼：标题+正文 */
@@ -1178,7 +1221,12 @@ function callAI(ce,text){
   }else{
     if(config.apiKey) headers['Authorization']='Bearer '+config.apiKey;
   }
-  var messages=[{role:'system',content:SYSTEM_PROMPT}].concat(chatHistory.slice(-12));
+  /* 原版：被骂/阴阳怪气 → 攻击档(喂脏话示例强行带歪模型)；文明版：绝不骂脏，加后缀锁死 */
+  var clean=getMode()==='clean';
+  var atk=isInsult(text)&&!clean;
+  var messages=atk
+    ? [{role:'system',content:ATTACK_PROMPT}].concat(ATTACK_FEWSHOT).concat(chatHistory.slice(-6))
+    : [{role:'system',content:clean?CLEAN_PROMPT:SYSTEM_PROMPT}].concat(chatHistory.slice(-12));
   fetch(url,{method:'POST',headers:headers,body:JSON.stringify({model:model,messages:messages,stream:false})})
     .then(function(r){return r.json();})
     .then(function(d){
@@ -1223,17 +1271,17 @@ function saveSetting(){
   // 直连模式 Key 留空 → 用内置免费 Key（默认就能聊）
   if(config.provider==='cloudflare'&&!config.apiBase)config.apiBase='https://xcs-ai.pages.dev/';
   localStorage.setItem(LS_CFG,JSON.stringify(config));closeSetting();
-  document.getElementById('crMode').textContent=isDemo()?'演示模式 ⚙':(config.provider==='cloudflare'&&!config.apiKey?'孙哥的AI ⚙':PROVIDERS[config.provider].name+' ⚙');
+  updateModeLabel();
   toast(isDemo()?'已切回演示模式':'已切换真 AI：'+PROVIDERS[config.provider].name);
 }
 function resetSetting(){
   config=JSON.parse(JSON.stringify(DEFAULT_CFG));
   localStorage.setItem(LS_CFG,JSON.stringify(config));closeSetting();
-  document.getElementById('crMode').textContent='孙哥的AI ⚙';
+  updateModeLabel();
   toast('已恢复默认：孙哥的免费 AI');
 }
 /* 初始化 */
-renderPosts();renderLv();renderEmoPanel();
+renderPosts();renderLv();renderEmoPanel();updateModeLabel();try{if(!localStorage.getItem(LS_MODE))setTimeout(openModeSel,800);}catch(e){}
 
 </script>
 </body>
